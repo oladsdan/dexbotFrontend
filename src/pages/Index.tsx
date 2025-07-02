@@ -231,14 +231,14 @@ const Index = () => {
                     <TableCell className="text-white">{index + 1}.</TableCell>
                     <TableCell className="text-white">
                       <span className="font-medium">{signal.pairName}</span>
-                      <span className="text-gray-400 ml-2">({signal.signal})</span>
+                      <span className="text-gray-400 ml-2"></span>
                     </TableCell>
                     <TableCell>
-                      <span className="text-yellow-400 font-medium">{parseFloat(signal.currentPrice).toFixed(2) || "N/A"}</span>
+                      <span className="text-yellow-400 font-medium">{signal.signal}</span>
                     </TableCell>
-                    <TableCell className="text-white">{parseFloat(signal.currentVolume).toFixed(2) || "N/A"}</TableCell>
+                    <TableCell className="text-white">{parseFloat(signal.currentPrice).toFixed(2) || "N/A"}</TableCell>
+                    <TableCell className="text-gray-400">{parseFloat(signal.currentVolume).toFixed(2) || "N/A"}</TableCell>
                     <TableCell className="text-gray-400">{signal.rsi || "N/A"}</TableCell>
-                    <TableCell className="text-gray-400">{signal.timeTaken || "N/A"}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
