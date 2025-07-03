@@ -63,17 +63,6 @@ const fetchGlobalSignals = () => {
   
 }
 
-
-  const fetchGlobalSignals = () => {
-    setLoading(true);
-    setTimeout(() => {
-      globalSignals = signals;
-      setLoading(false);
-    }, 3000);
-
-    return globalSignals;
-  };
-
   useEffect(() => {
     const fetchCountry = async () => {
       try {
