@@ -225,7 +225,9 @@ const fetchGlobalSignals = () => {
           {loading?(
             <div className="flex items-center justify-center h-64">
               <Loader className="animate-spin text-green-400 h-8 w-8" />
+              <span>Please wait while we fetch the signals. Some calculations are working in the background.</span>
             </div>
+            
           ):(
             <Table>
               <TableHeader>
