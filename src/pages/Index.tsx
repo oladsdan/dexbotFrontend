@@ -133,7 +133,7 @@ const fetchGlobalSignals = () => {
       // Add other signal types if you have them, e.g., 'Neutral', 'Insufficient Data'
     };
 
-    return [...globalSignals].sort((a, b) => {
+    return [...signals].sort((a, b) => {
       const orderA = signalOrder[a.signal] || 99; // Default to a high number if signal type is unknown
       const orderB = signalOrder[b.signal] || 99;
 
@@ -143,7 +143,7 @@ const fetchGlobalSignals = () => {
       }
       return orderA - orderB;
     });
-  }, [globalSignals]);
+  }, [signals]);
 
 
 
