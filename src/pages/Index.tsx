@@ -288,6 +288,12 @@ const fetchGlobalSignals = () => {
                   <TableHead className="text-gray-300 font-medium text-nowrap">
                     CURRENT PRICE (USD) ↕
                   </TableHead>
+                  <TableHead className="text-gray-300 font-medium text-nowrap">
+                    Signal Update (Time and Price) ↕
+                  </TableHead>
+                  <TableHead className="text-gray-300 font-medium text-nowrap">
+                    Time Taken for 1.2% ↕
+                  </TableHead>
                   {/* <TableHead className="text-gray-300 font-medium text-nowrap">CURRENT VOLUME ↕</TableHead>
                   <TableHead className="text-gray-300 font-medium">RSI</TableHead> */}
                 </TableRow>
@@ -312,6 +318,12 @@ const fetchGlobalSignals = () => {
                     </TableCell>
                     <TableCell className="text-white">
                       {parseFloat(signal.currentPrice).toFixed(2) || "N/A"}
+                    </TableCell>
+                    <TableCell className="text-white">
+                      {"N/A"}
+                    </TableCell>
+                    <TableCell className="text-white">
+                      {"N/A"}
                     </TableCell>
                     {/* <TableCell className="text-gray-400">{parseFloat(signal.currentVolume).toFixed(2) || "N/A"}</TableCell>
                     <TableCell className="text-gray-400">{signal.rsi || "N/A"}</TableCell> */}
