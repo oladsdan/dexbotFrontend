@@ -19,7 +19,7 @@ const Index = () => {
   const [secondsLeft, setSecondsLeft]= useState(30);
   const [secondsFetched, setSecondsFetched] = useState(35);
   const [signals, setSignals] = useState([]);
-  // const [globalSignals, setGlobalSignals] = useState([]);
+  const [globalSignals, setGlobalSignals] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedSignal, setSelectedSignal] = useState(null);
@@ -85,7 +85,7 @@ const fetchGlobalSignals = () => {
       setSecondsFetched((prev) => {
         if (prev === 1) {
           fetchSignals(); // trigger the fetch
-          return 35; // reset timer
+          return 5; // reset timer
         }
         return prev - 1;
       });
