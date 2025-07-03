@@ -52,6 +52,18 @@ const Index = () => {
     }
   };
 
+const fetchGlobalSignals = () => {
+  setLoading(true);
+  setTimeout(() => {
+    globalSignals = signals;
+    setLoading(false);
+  }, 1500); 
+  
+  return globalSignals;
+  
+}
+
+
   const fetchGlobalSignals = () => {
     setLoading(true);
     setTimeout(() => {
