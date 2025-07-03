@@ -26,7 +26,7 @@ const Index = () => {
 
    const API_URL = "https://pancakeswapsignal.onrender.com/api/signals"; // Your backend API
 
-   let globalSignals;
+   let globalSignals = [];
 
  const fetchSignals = async () => {
   try {
