@@ -24,7 +24,7 @@ const Index = () => {
   const [loading, setLoading] = useState(true);
   const [selectedSignal, setSelectedSignal] = useState(null);
 
-   const API_URL = 'https://pancakeswapsignal.onrender.com/api/generated-signals'; // Your backend API
+   const API_URL = "https://pancakeswapsignal.onrender.com/api/signals"; // Your backend API
 
    let globalSignals;
 
