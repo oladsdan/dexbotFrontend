@@ -17,16 +17,20 @@ const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentTime, setCurrentTime] = useState(new Date());
   const [secondsLeft, setSecondsLeft]= useState(30);
+  const [secondsFetched, setSecondsFetched] = useState(60);
   const [signals, setSignals] = useState([]);
+  // const [globalSignals, setGlobalSignals] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedSignal, setSelectedSignal] = useState(null);
 
-   const API_URL = 'https://pancakeswapsignal.onrender.com/api/signals'; // Your backend API
+   const API_URL = 'https://pancakeswapsignal.onrender.com/api/generated-signals'; // Your backend API
+
+   let globalSignals;
 
  const fetchSignals = async () => {
   try {
-    setLoading(true);
+    
     setError(null);
     const response = await fetch(API_URL);
     if (!response.ok) {
@@ -48,12 +52,40 @@ const Index = () => {
   }
 };
 
+const fetchGlobalSignals = () => {
+  setLoading(true);
+  setTimeout(() => {
+    globalSignals = signals;
+    setLoading(false);
+  }, 3000); 
+  
+  return globalSignals;
+  
+}
+
+
+
   useEffect(() => {
     const interval = setInterval(() => {
       setSecondsLeft((prev) => {
         if (prev === 1) {
-          fetchSignals(); // trigger the fetch
+          fetchGlobalSignals(); // trigger the fetch
           return 30; // reset timer
+        }
+        return prev - 1;
+      });
+    }, 1000); // every second
+
+    return () => clearInterval(interval); // cleanup on unmount
+  }, []);
+
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSecondsFetched((prev) => {
+        if (prev === 1) {
+          fetchSignals(); // trigger the fetch
+          return 60; // reset timer
         }
         return prev - 1;
       });
@@ -101,7 +133,7 @@ const Index = () => {
       // Add other signal types if you have them, e.g., 'Neutral', 'Insufficient Data'
     };
 
-    return [...signals].sort((a, b) => {
+    return [...globalSignals].sort((a, b) => {
       const orderA = signalOrder[a.signal] || 99; // Default to a high number if signal type is unknown
       const orderB = signalOrder[b.signal] || 99;
 
@@ -111,28 +143,9 @@ const Index = () => {
       }
       return orderA - orderB;
     });
-  }, [signals]);
+  }, [globalSignals]);
 
-  // const signals = [
-  //   {
-  //     sno: 1,
-  //     token: "VET",
-  //     name: "VeChain",
-  //     signal: "HOLD",
-  //     price: "0.02066000",
-  //     update: "N/A",
-  //     timeTaken: "N/A"
-  //   },
-  //   {
-  //     sno: 2,
-  //     token: "RESOLV",
-  //     name: "RESOLV",
-  //     signal: "HOLD",
-  //     price: "0.13780000",
-  //     update: "N/A",
-  //     timeTaken: "N/A"
-  //   }
-  // ];
+
 
   return (
     <div className="min-h-screen bg-slate-800 text-white">
