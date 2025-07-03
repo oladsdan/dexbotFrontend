@@ -11,11 +11,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { DataTable } from "@/components/ui/data-table";
+
+export interface Signal {
+  pairName: string;
+  signal: string;
+  currentPrice: string;
+}
 
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [secondsLeft, setSecondsLeft]= useState(30);
+  const [secondsLeft, setSecondsLeft] = useState(30);
   const [secondsFetched, setSecondsFetched] = useState(35);
   const [signals, setSignals] = useState([]);
   const [globalSignals, setGlobalSignals] = useState([]);
@@ -27,9 +34,6 @@ const Index = () => {
 
   const API_URL = "https://pancakeswapsignal.onrender.com/api/signals"; // Your backend API
 
-  
-  
-  
   const fetchSignals = async () => {
     try {
       setLoading(true);
@@ -39,7 +43,7 @@ const Index = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      
+
       if (!Array.isArray(data)) {
         throw new Error("API response is not an array");
       }
@@ -53,21 +57,17 @@ const Index = () => {
       setLoading(false);
     }
   };
-  useEffect(()=> {
+  useEffect(() => {
     fetchSignals();
   }, []);
-  
-// const fetchGlobalSignals = () => {
-//   setLoading(true);
-//   setTimeout(() => {
-//     setLoading(false);
-//   }, 1500); 
-  
 
-  
-// }
+  // const fetchGlobalSignals = () => {
+  //   setLoading(true);
+  //   setTimeout(() => {
+  //     setLoading(false);
+  //   }, 1500);
 
-
+  // }
 
   useEffect(() => {
     const fetchCountry = async () => {
@@ -165,12 +165,61 @@ const Index = () => {
   }, [signals]);
 
   const filteredSignals = useMemo(() => {
-  if (!searchTerm.trim()) return sortedSignals;
+    if (!searchTerm.trim()) return sortedSignals;
 
-  return sortedSignals.filter((signal) =>
-    signal.pairName.toLowerCase().includes(searchTerm.trim().toLowerCase())
-  );
-}, [searchTerm, sortedSignals]);
+    return sortedSignals.filter((signal) =>
+      signal.pairName.toLowerCase().includes(searchTerm.trim().toLowerCase())
+    );
+  }, [searchTerm, sortedSignals]);
+
+  const columns = [
+    {
+      accessorKey: "serialNo",
+      header: "S/NO",
+      cell: (info) => `${info.row.index + 1}.`,
+    },
+    {
+      accessorKey: "pairName",
+      header: "TOKEN (NAME)",
+      cell: (info) => `${info.getValue().split("/")[0]}`,
+    },
+    {
+      accessorKey: "signal",
+      header: "CURRENT SIGNAL",
+      cell: ({ row }) => {
+          const signal = row.original.signal.toLowerCase();
+          let colorClass = "text-white"; // default color
+
+          if (signal === "buy") colorClass = "text-green-400";
+          else if (signal === "sell") colorClass = "text-red-400";
+          else if (signal === "hold") colorClass = "text-yellow-400";
+          else if (signal === "exit") colorClass = "text-orange-400";
+
+          return (
+            <div className="flex items-center">
+              <span className={`font-medium uppercase ${colorClass}`}>
+                {signal}
+              </span>
+            </div>
+          );
+        },
+    },
+    {
+      accessorKey: "currentPrice",
+      header: "CURRENT PRICE (USD)",
+      cell: (info) => parseFloat(info.getValue()).toFixed(2) || "N/A",
+    },
+    {
+      accessorKey: "targetPrice",
+      header: "Signal Update (Time and Price)",
+      cell: () =>  "N/A",
+    },
+    {
+      accessorKey: "time",
+      header: "Time Taken for 1.2%",
+      cell: () => "N/A",
+    }
+  ];
 
   return (
     <div className="min-h-screen bg-slate-800 text-white">
@@ -179,7 +228,11 @@ const Index = () => {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-8">
             <div className="bg-black p-2 rounded">
-              <span className="text-teal-400 font-bold text-xl">₿</span>
+              <img
+                src="/logo.png"
+                alt="Logo"
+                className="h-8 w-8 object-cover"
+              />
             </div>
             <nav className="hidden md:flex space-x-6">
               <a href="#" className="text-white hover:text-teal-200">
@@ -209,8 +262,8 @@ const Index = () => {
       <main className="max-w-7xl mx-auto px-4 py-8">
         {/* Title Section */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-green-400 mb-4">
-            Signals - Pancake.finance
+          <h1 className="text-3xl font-bold text-green-400 mb-4 text-center">
+            Signals - <span className="block sm:inline">Pancake.finance</span>
           </h1>
           <p className="text-gray-400 mb-2">
             Next update in: {formatTimeSec(secondsLeft)}
@@ -238,22 +291,26 @@ const Index = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <div className="text-center">
             <span className="text-green-400 font-medium">
-              Buy: {filteredSignals.filter((s) => s.signal === "Buy").length}/{filteredSignals.length}
+              Buy: {filteredSignals.filter((s) => s.signal === "Buy").length}/
+              {filteredSignals.length}
             </span>
           </div>
           <div className="text-center">
             <span className="text-red-400 font-medium">
-              Sell: {filteredSignals.filter((s) => s.signal === "Sell").length}/{filteredSignals.length}
+              Sell: {filteredSignals.filter((s) => s.signal === "Sell").length}/
+              {filteredSignals.length}
             </span>
           </div>
           <div className="text-center">
             <span className="text-yellow-400 font-medium">
-              Hold: {filteredSignals.filter((s) => s.signal === "Hold").length}/{filteredSignals.length}
+              Hold: {filteredSignals.filter((s) => s.signal === "Hold").length}/
+              {filteredSignals.length}
             </span>
           </div>
           <div className="text-center">
             <span className="text-orange-400 font-medium">
-              Exit: {filteredSignals.filter((s) => s.signal === "Exit").length}/{filteredSignals.length}
+              Exit: {filteredSignals.filter((s) => s.signal === "Exit").length}/
+              {filteredSignals.length}
             </span>
           </div>
         </div>
@@ -269,76 +326,14 @@ const Index = () => {
         </div>
 
         {/* Data Table */}
-        <div className="bg-slate-700 rounded-lg overflow-hidden overflow-x-auto">
-          {loading ? (
-            <div className="flex items-center justify-center h-64">
-              <Loader className="animate-spin text-green-400 h-8 w-8" />
-              <span>
-                Please wait while we fetch the signals. Some calculations are
-                working in the background.
-              </span>
-            </div>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow className="border-slate-600 hover:bg-slate-600">
-                  <TableHead className="text-gray-300 font-medium">
-                    S/NO
-                  </TableHead>
-                  <TableHead className="text-gray-300 font-medium text-nowrap">
-                    TOKEN (NAME) ↕
-                  </TableHead>
-                  <TableHead className="text-gray-300 font-medium text-nowrap">
-                    CURRENT SIGNAL ↕
-                  </TableHead>
-                  <TableHead className="text-gray-300 font-medium text-nowrap">
-                    CURRENT PRICE (USD) ↕
-                  </TableHead>
-                  <TableHead className="text-gray-300 font-medium text-nowrap">
-                    Signal Update (Time and Price) ↕
-                  </TableHead>
-                  <TableHead className="text-gray-300 font-medium text-nowrap">
-                    Time Taken for 1.2% ↕
-                  </TableHead>
-                  {/* <TableHead className="text-gray-300 font-medium text-nowrap">CURRENT VOLUME ↕</TableHead>
-                  <TableHead className="text-gray-300 font-medium">RSI</TableHead> */}
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredSignals.map((signal, index) => (
-                  <TableRow
-                    key={index}
-                    className="border-slate-600 hover:bg-slate-600"
-                  >
-                    <TableCell className="text-white">{index + 1}.</TableCell>
-                    <TableCell className="text-white">
-                      <span className="font-medium">
-                        {signal.pairName.split("/")[0]}
-                      </span>
-                      <span className="text-gray-400 ml-2"></span>
-                    </TableCell>
-                    <TableCell>
-                      <span className="text-yellow-400 font-medium">
-                        {signal.signal}
-                      </span>
-                    </TableCell>
-                    <TableCell className="text-white">
-                      {parseFloat(signal.currentPrice).toFixed(2) || "N/A"}
-                    </TableCell>
-                    <TableCell className="text-white">
-                      {"N/A"}
-                    </TableCell>
-                    <TableCell className="text-white">
-                      {"N/A"}
-                    </TableCell>
-                    {/* <TableCell className="text-gray-400">{parseFloat(signal.currentVolume).toFixed(2) || "N/A"}</TableCell>
-                    <TableCell className="text-gray-400">{signal.rsi || "N/A"}</TableCell> */}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </div>
+        {loading ? (
+          <div className="flex justify-center items-center py-20">
+            <Loader className="animate-spin text-green-400 h-8 w-8 mr-4" />
+            <span>Please wait while we fetch the signals...</span>
+          </div>
+        ) : (
+          <DataTable columns={columns} data={filteredSignals} />
+        )}
       </main>
     </div>
   );
