@@ -17,7 +17,7 @@ const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentTime, setCurrentTime] = useState(new Date());
   const [secondsLeft, setSecondsLeft]= useState(30);
-  const [secondsFetched, setSecondsFetched] = useState(60);
+  const [secondsFetched, setSecondsFetched] = useState(35);
   const [signals, setSignals] = useState([]);
   // const [globalSignals, setGlobalSignals] = useState([]);
   const [error, setError] = useState(null);
@@ -85,7 +85,7 @@ const fetchGlobalSignals = () => {
       setSecondsFetched((prev) => {
         if (prev === 1) {
           fetchSignals(); // trigger the fetch
-          return 60; // reset timer
+          return 35; // reset timer
         }
         return prev - 1;
       });
