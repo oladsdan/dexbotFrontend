@@ -57,7 +57,7 @@ const fetchGlobalSignals = () => {
   setTimeout(() => {
     globalSignals = signals;
     setLoading(false);
-  }, 3000); 
+  }, 1500); 
   
   return globalSignals;
   
