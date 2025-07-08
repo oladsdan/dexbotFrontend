@@ -17,6 +17,8 @@ export interface Signal {
   pairName: string;
   signal: string;
   currentPrice: string;
+  lstmPrediction?: string | number;
+  xgboostPrediction?: string | number;
 }
 
 const Index = () => {
@@ -224,12 +226,12 @@ const Index = () => {
     {
       accessorKey: "AI-LSTM",
       header: "LSTM Prediction",
-      cell: () => "N/A",
+      cell: ({ row }) => row.original.lstmPrediction || "N/A", // Modified line,
     },
     {
       accessorKey: "AI-XGBOOST",
       header: "XGBoost Prediction",
-      cell: () => "N/A",
+      cell: ({ row }) => row.original.xgboostPrediction || "N/A",
     },
 
     
