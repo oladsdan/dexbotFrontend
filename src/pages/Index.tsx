@@ -211,7 +211,7 @@ const Index = () => {
     {
       accessorKey: "currentPrice",
       header: "CURRENT PRICE (USD)",
-      cell: (info) => parseFloat(info.getValue()).toFixed(2) || "N/A",
+      cell: (info) => parseFloat(info.getValue()).toFixed(8) || "N/A",
     },
     {
       accessorKey: "targetPrice",
