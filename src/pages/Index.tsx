@@ -220,7 +220,21 @@ const Index = () => {
       accessorKey: "time",
       header: "Time Taken for 1.2%",
       cell: () => "N/A",
-    }
+    },
+    {
+      accessorKey: "AI-LSTM",
+      header: "LSTM Prediction",
+      cell: () => "N/A",
+    },
+    {
+      accessorKey: "AI-XGBOOST",
+      header: "XGBoost Prediction",
+      cell: () => "N/A",
+    },
+
+    
+
+
   ];
 
   return (
