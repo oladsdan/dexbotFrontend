@@ -17,6 +17,7 @@ export interface Signal {
   pairName: string;
   signal: string;
   currentPrice: string;
+  timeTakenFor1_6_percent: string;
   lstmPrediction?: string | number;
   xgboostPrediction?: string | number;
 }
@@ -223,7 +224,7 @@ const Index = () => {
     {
       accessorKey: "time",
       header: "Time Taken for 1.2%",
-      cell: () => "N/A",
+      cell: ({row}) => row.original.timeTakenFor1_6_percent || "N/A",
     },
     {
       accessorKey: "AI-LSTM",
