@@ -108,21 +108,7 @@ const Index = () => {
     return () => clearInterval(interval); // cleanup on unmount
   }, []);
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setSecondsFetched((prev) => {
-  //       if (prev === 1) {
-  //         fetchSignals(); // trigger the fetch
-  //         return 30; // reset timer
-  //       }
-  //       return prev - 1;
-  //     });
-  //   }, 1000); // every second
 
-  //   return () => clearInterval(interval); // cleanup on unmount
-  // }, []);
-
-  //   // Format seconds into mm:ss
   const formatTimeSec = (secs) => {
     const minutes = Math.floor(secs / 60);
     const seconds = secs % 60;
@@ -205,7 +191,7 @@ const Index = () => {
           return (
             <div className="flex items-center">
               <span className={`font-medium uppercase ${colorClass}`}>
-                {signal}
+                {signal === "Hold" ? "No Action" : signal}
               </span>
             </div>
           );
