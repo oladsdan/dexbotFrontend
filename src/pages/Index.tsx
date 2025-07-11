@@ -316,24 +316,24 @@ const Index = () => {
               {filteredSignals.length}
             </span>
           </div>
-          <div className="text-center">
+          {/* <div className="text-center">
             <span className="text-red-400 font-medium">
               Sell: {filteredSignals.filter((s) => s.signal === "Sell").length}/
               {filteredSignals.length}
             </span>
-          </div>
+          </div> */}
           <div className="text-center">
             <span className="text-yellow-400 font-medium">
               Hold: {filteredSignals.filter((s) => s.signal === "Hold").length}/
               {filteredSignals.length}
             </span>
           </div>
-          <div className="text-center">
+          {/* <div className="text-center">
             <span className="text-orange-400 font-medium">
               Exit: {filteredSignals.filter((s) => s.signal === "Exit").length}/
               {filteredSignals.length}
             </span>
-          </div>
+          </div> */}
         </div>
 
         {/* Progress Bar */}
