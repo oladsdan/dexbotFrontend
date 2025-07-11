@@ -198,9 +198,9 @@ const Index = () => {
           let colorClass = "text-white"; // default color
 
           if (signal === "buy") colorClass = "text-green-400";
-          else if (signal === "sell") colorClass = "text-red-400";
+          // else if (signal === "sell") colorClass = "text-red-400";
           else if (signal === "hold") colorClass = "text-yellow-400";
-          else if (signal === "exit") colorClass = "text-orange-400";
+          // else if (signal === "exit") colorClass = "text-orange-400";
 
           return (
             <div className="flex items-center">
