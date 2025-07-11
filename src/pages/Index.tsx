@@ -229,11 +229,11 @@ const Index = () => {
     //   header: "XGBoost Prediction",
     //   cell: ({ row }) => row.original.xgboostPrediction || "N/A",
     // },
-    {
-      accessorKey: "targetPrice",
-      header: "Signal Update (Time and Price)",
-      cell: ({row}) =>  row.original.signalUpdate ? `${row.original.signalUpdate.time} - ${row.original.signalUpdate.price}` : "N/A",
-    },
+    // {
+    //   accessorKey: "targetPrice",
+    //   header: "Signal Update (Time and Price)",
+    //   cell: ({row}) =>  row.original.signalUpdate ? `${row.original.signalUpdate.time} - ${row.original.signalUpdate.price}` : "N/A",
+    // },
     // {
     //   accessorKey: "time",
     //   header: "Time Taken for 1.2%",
