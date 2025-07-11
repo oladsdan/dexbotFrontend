@@ -164,12 +164,31 @@ const Index = () => {
     });
   }, [signals]);
 
-  const filteredSignals = useMemo(() => {
-    if (!searchTerm.trim()) return sortedSignals;
+  // const filteredSignals = useMemo(() => {
+  //   if (!searchTerm.trim()) return sortedSignals;
 
-    return sortedSignals.filter((signal) =>
-      signal.pairName.toLowerCase().includes(searchTerm.trim().toLowerCase())
+  //   return sortedSignals.filter((signal) =>
+  //     signal.pairName.toLowerCase().includes(searchTerm.trim().toLowerCase())
+  //   );
+  // }, [searchTerm, sortedSignals]);
+
+  const filteredSignals = useMemo(() => {
+    // Start with sorted signals
+    let currentFilteredSignals = sortedSignals;
+
+    // Filter by search term if present
+    if (searchTerm.trim()) {
+      currentFilteredSignals = currentFilteredSignals.filter((signal) =>
+        signal.pairName.toLowerCase().includes(searchTerm.trim().toLowerCase())
+      );
+    }
+
+    // NEW: Filter out signals with "Error"
+    currentFilteredSignals = currentFilteredSignals.filter(
+      (signal) => signal.signal !== "Error"
     );
+
+    return currentFilteredSignals;
   }, [searchTerm, sortedSignals]);
 
   const columns = [
