@@ -217,16 +217,6 @@ const Index = () => {
       cell: (info) => parseFloat(info.getValue()).toFixed(8) || "N/A",
     },
     {
-      accessorKey: "targetPrice",
-      header: "Signal Update (Time and Price)",
-      cell: () =>  "N/A",
-    },
-    {
-      accessorKey: "time",
-      header: "Time Taken for 1.2%",
-      cell: ({row}) => row.original.timeTakenFor1_6_percent || "N/A",
-    },
-    {
       accessorKey: "AI-LSTM",
       header: "LSTM Prediction",
       cell: ({ row }) => row.original.lstmPrediction || "N/A", // Modified line,
@@ -236,6 +226,16 @@ const Index = () => {
       header: "XGBoost Prediction",
       cell: ({ row }) => row.original.xgboostPrediction || "N/A",
     },
+    {
+      accessorKey: "targetPrice",
+      header: "Signal Update (Time and Price)",
+      cell: () =>  "N/A",
+    },
+    // {
+    //   accessorKey: "time",
+    //   header: "Time Taken for 1.2%",
+    //   cell: ({row}) => row.original.timeTakenFor1_6_percent || "N/A",
+    // },
 
     
 
@@ -309,31 +309,34 @@ const Index = () => {
         </div>
 
         {/* Signal Statistics */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="text-center">
-            <span className="text-green-400 font-medium">
-              Buy: {filteredSignals.filter((s) => s.signal === "Buy").length}/
-              {filteredSignals.length}
-            </span>
+        <div className="flex justify-center items-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 ">
+            <div className="text-center">
+              <span className="text-green-400 font-medium">
+                Buy: {filteredSignals.filter((s) => s.signal === "Buy").length}/
+                {filteredSignals.length}
+              </span>
+            </div>
+            {/* <div className="text-center">
+              <span className="text-red-400 font-medium">
+                Sell: {filteredSignals.filter((s) => s.signal === "Sell").length}/
+                {filteredSignals.length}
+              </span>
+            </div> */}
+            <div className="text-center">
+              <span className="text-yellow-400 font-medium">
+                Hold: {filteredSignals.filter((s) => s.signal === "Hold").length}/
+                {filteredSignals.length}
+              </span>
+            </div>
+            {/* <div className="text-center">
+              <span className="text-orange-400 font-medium">
+                Exit: {filteredSignals.filter((s) => s.signal === "Exit").length}/
+                {filteredSignals.length}
+              </span>
+            </div> */}
           </div>
-          {/* <div className="text-center">
-            <span className="text-red-400 font-medium">
-              Sell: {filteredSignals.filter((s) => s.signal === "Sell").length}/
-              {filteredSignals.length}
-            </span>
-          </div> */}
-          <div className="text-center">
-            <span className="text-yellow-400 font-medium">
-              Hold: {filteredSignals.filter((s) => s.signal === "Hold").length}/
-              {filteredSignals.length}
-            </span>
-          </div>
-          {/* <div className="text-center">
-            <span className="text-orange-400 font-medium">
-              Exit: {filteredSignals.filter((s) => s.signal === "Exit").length}/
-              {filteredSignals.length}
-            </span>
-          </div> */}
+
         </div>
 
         {/* Progress Bar */}
