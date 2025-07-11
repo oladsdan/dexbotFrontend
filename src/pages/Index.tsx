@@ -18,8 +18,15 @@ export interface Signal {
   signal: string;
   currentPrice: string;
   timeTakenFor1_6_percent: string;
-  lstmPrediction?: string | number;
-  xgboostPrediction?: string | number;
+  // lstmPrediction?: string | number;
+  // xgboostPrediction?: string | number;
+  combinedPrediction?: string | number;
+  predictedTime?: string;
+  expiryTime?: string;
+  signalUpdate?: {
+    time: string;
+    price: string;
+  }
 }
 
 const Index = () => {
@@ -204,18 +211,28 @@ const Index = () => {
     },
     {
       accessorKey: "AI-LSTM",
-      header: "LSTM Prediction",
-      cell: ({ row }) => row.original.lstmPrediction || "N/A", // Modified line,
+      header: "AI-Prediction(USD)",
+      cell: ({ row }) => row.original.combinedPrediction || row.original.lstmPrediction || "N/A", // Modified line,
     },
     {
-      accessorKey: "AI-XGBOOST",
-      header: "XGBoost Prediction",
-      cell: ({ row }) => row.original.xgboostPrediction || "N/A",
+      accessorKey: "prediction Time",
+      header: "Prediction Time",
+      cell: ({ row }) => row.original.predictedTime || "N/A",
     },
+    {
+      accessorKey: "expiry Time",
+      header: "expiry Time",
+      cell: ({ row }) => row.original.expiryTime || "N/A",
+    },
+    // {
+    //   accessorKey: "AI-XGBOOST",
+    //   header: "XGBoost Prediction",
+    //   cell: ({ row }) => row.original.xgboostPrediction || "N/A",
+    // },
     {
       accessorKey: "targetPrice",
       header: "Signal Update (Time and Price)",
-      cell: () =>  "N/A",
+      cell: ({row}) =>  row.original.signalUpdate ? `${row.original.signalUpdate.time} - ${row.original.signalUpdate.price}` : "N/A",
     },
     // {
     //   accessorKey: "time",
@@ -351,48 +368,3 @@ const Index = () => {
 
 export default Index;
 
-// import React, { useEffect, useState } from 'react';
-
-// const TimerWithFetch = () => {
-//   const [secondsLeft, setSecondsLeft] = useState(30);
-
-//   // Function to fetch data
-//   const fetchData = async () => {
-//     try {
-//       const response = await fetch('https://your-endpoint.com/api');
-//       const data = await response.json();
-//       console.log('Fetched data:', data);
-//     } catch (error) {
-//       console.error('Error fetching data:', error);
-//     }
-//   };
-
-//   useEffect(() => {
-//     const interval = setInterval(() => {
-//       setSecondsLeft((prev) => {
-//         if (prev === 1) {
-//           fetchData(); // trigger the fetch
-//           return 30; // reset timer
-//         }
-//         return prev - 1;
-//       });
-//     }, 1000); // every second
-
-//     return () => clearInterval(interval); // cleanup on unmount
-//   }, []);
-
-//   // Format seconds into mm:ss
-//   const formatTime = (secs) => {
-//     const minutes = Math.floor(secs / 60);
-//     const seconds = secs % 60;
-//     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-//   };
-
-//   return (
-//     <div style={{ fontSize: '2rem', fontFamily: 'monospace' }}>
-//       Countdown: {formatTime(secondsLeft)}
-//     </div>
-//   );
-// };
-
-// export default TimerWithFetch;
