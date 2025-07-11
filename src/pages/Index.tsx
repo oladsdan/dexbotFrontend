@@ -191,7 +191,7 @@ const Index = () => {
           return (
             <div className="flex items-center">
               <span className={`font-medium uppercase ${colorClass}`}>
-                {signal === "HOLD" ? "No Action" : signal}
+                {signal.toLowercase() === "hold" ? "No Action" : signal}
               </span>
             </div>
           );
