@@ -43,9 +43,9 @@ const Index = () => {
   const [timezone, setTimezone] = useState("");
 
   // const API_URL = "https://pancakeswapsignal.onrender.com/api/signals"; // Your backend API
-  // const API_URL = "https://projectmlpancakeswap.onrender.com/api/signals"; // Your backend API
+  const API_URL = "https://projectmlpancakeswap.onrender.com/api/signals"; // Your backend API
   // const API_URL = "http://188.165.71.103:3000/api/signals"; // Your backend API
-  const API_URL = "/api/signals"; // Your backend API
+  // const API_URL = "/api/signals"; // Your backend API
   // const API_URL = "https://pancake-signalsugragph.onrender.com/api/signals"; // Your backend API
 
   const fetchSignals = async () => {
