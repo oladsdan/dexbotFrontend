@@ -3,15 +3,9 @@ import { Loader, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { DataTable } from "@/components/ui/data-table";
+import { CountdownDisplay } from "@/components/ui/CountdownDisplay";
+import { useQuery } from "@tanstack/react-query";
 
 export interface Signal {
   pairName: string;
@@ -26,7 +20,7 @@ export interface Signal {
   signalUpdate?: {
     time: string;
     price: string;
-  }
+  };
 }
 
 const Index = () => {
@@ -34,7 +28,7 @@ const Index = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [secondsLeft, setSecondsLeft] = useState(30);
   const [secondsFetched, setSecondsFetched] = useState(35);
-  const [signals, setSignals] = useState([]);
+  // const [signals, setSignals] = useState([]);
   const [globalSignals, setGlobalSignals] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -49,32 +43,45 @@ const Index = () => {
   // const API_URL = "/api/signals"; // Your backend API
   // const API_URL = "https://pancake-signalsugragph.onrender.com/api/signals"; // Your backend API
 
-  const fetchSignals = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const response = await fetch(API_URL);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
+  // const fetchSignals = async () => {
+  //   try {
+  //     const response = await fetch(API_URL);
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! status: ${response.status}`);
+  //     }
+  //     const data = await response.json();
 
-      if (!Array.isArray(data)) {
-        throw new Error("API response is not an array");
-      }
-      setSignals(data);
-      setLoading(false);
-    } catch (err) {
-      console.error("Failed to fetch signals:", err);
-      setError("signal is loading. please wait while it fetches.");
-      setSignals([]); // ensure `signals` remains an array
-    } finally {
-      setLoading(false);
-    }
+  //     if (!Array.isArray(data)) {
+  //       throw new Error("API response is not an array");
+  //     }
+  //     setSignals(data);
+  //     setLoading(false);
+  //   } catch (err) {
+  //     console.error("Failed to fetch signals:", err);
+  //     setError("signal is loading. please wait while it fetches.");
+  //     setSignals([]); // ensure `signals` remains an array
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  //  useEffect(() => {
+  //   fetchSignals();
+  // }, []);
+
+  const fetchSignals = async () => {
+    const { data } = await axios.get(API_URL);
+    return data;
   };
-  useEffect(() => {
-    fetchSignals();
-  }, []);
+  const {
+    data: signals = [],
+    isLoading,
+    refetch,
+    error: queryError,
+  } = useQuery({
+    queryKey: ["signals"],
+    queryFn: fetchSignals,
+  });
 
   // const fetchGlobalSignals = () => {
   //   setLoading(true);
@@ -102,20 +109,19 @@ const Index = () => {
     fetchCountry();
   }, []);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setSecondsLeft((prev) => {
-        if (prev === 1) {
-          fetchSignals(); // trigger the fetch
-          return 30; // reset timer
-        }
-        return prev - 1;
-      });
-    }, 1000); // every second
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setSecondsLeft((prev) => {
+  //       if (prev === 1) {
+  //         fetchSignals(); // trigger the fetch
+  //         return 30; // reset timer
+  //       }
+  //       return prev - 1;
+  //     });
+  //   }, 1000); // every second
 
-    return () => clearInterval(interval); // cleanup on unmount
-  }, []);
-
+  //   return () => clearInterval(interval); // cleanup on unmount
+  // }, []);
 
   const formatTimeSec = (secs) => {
     const minutes = Math.floor(secs / 60);
@@ -207,22 +213,22 @@ const Index = () => {
       accessorKey: "signal",
       header: "CURRENT SIGNAL",
       cell: ({ row }) => {
-          const signal = row.original.signal.toLowerCase();
-          let colorClass = "text-white"; // default color
+        const signal = row.original.signal.toLowerCase();
+        let colorClass = "text-white"; // default color
 
-          if (signal === "buy") colorClass = "text-green-400";
-          // else if (signal === "sell") colorClass = "text-red-400";
-          else if (signal === "hold") colorClass = "text-yellow-400";
-          // else if (signal === "exit") colorClass = "text-orange-400";
+        if (signal === "buy") colorClass = "text-green-400";
+        // else if (signal === "sell") colorClass = "text-red-400";
+        else if (signal === "hold") colorClass = "text-yellow-400";
+        // else if (signal === "exit") colorClass = "text-orange-400";
 
-          return (
-            <div className="flex items-center">
-              <span className={`font-medium uppercase ${colorClass}`}>
-                {signal.toLowerCase() === "hold" ? "No Action" : signal}
-              </span>
-            </div>
-          );
-        },
+        return (
+          <div className="flex items-center">
+            <span className={`font-medium uppercase ${colorClass}`}>
+              {signal.toLowerCase() === "hold" ? "No Action" : signal}
+            </span>
+          </div>
+        );
+      },
     },
     {
       accessorKey: "currentPrice",
@@ -232,7 +238,8 @@ const Index = () => {
     {
       accessorKey: "AI-LSTM",
       header: "AI-Prediction(USD)",
-      cell: ({ row }) => row.original.combinedPrediction || row.original.lstmPrediction || "N/A", // Modified line,
+      cell: ({ row }) =>
+        row.original.combinedPrediction || row.original.lstmPrediction || "N/A", // Modified line,
     },
     {
       accessorKey: "prediction Time",
@@ -259,10 +266,6 @@ const Index = () => {
     //   header: "Time Taken for 1.2%",
     //   cell: ({row}) => row.original.timeTakenFor1_6_percent || "N/A",
     // },
-
-    
-
-
   ];
 
   return (
@@ -309,9 +312,9 @@ const Index = () => {
           <h1 className="text-3xl font-bold text-green-400 mb-4 text-center">
             Signals - <span className="block sm:inline">Pancake.finance</span>
           </h1>
-          <p className="text-gray-400 mb-2">
-            Next update in: {formatTimeSec(secondsLeft)}
-          </p>
+          <div className="text-center text-gray-400 mb-6">
+            <CountdownDisplay onRefresh={refetch} refreshInterval={30} />
+          </div>
           <p className="text-gray-400">
             Time: {formatTime(currentTime)} ({country})
           </p>
@@ -333,7 +336,7 @@ const Index = () => {
 
         {/* Signal Statistics */}
         <div className="flex justify-center items-center">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 ">
+          <div className="grid grid-cols-2 gap-4 mb-8 ">
             <div className="text-center">
               <span className="text-green-400 font-medium">
                 Buy: {filteredSignals.filter((s) => s.signal === "Buy").length}/
@@ -348,7 +351,8 @@ const Index = () => {
             </div> */}
             <div className="text-center">
               <span className="text-yellow-400 font-medium">
-                Hold: {filteredSignals.filter((s) => s.signal === "Hold").length}/
+                Hold:{" "}
+                {filteredSignals.filter((s) => s.signal === "Hold").length}/
                 {filteredSignals.length}
               </span>
             </div>
@@ -359,21 +363,24 @@ const Index = () => {
               </span>
             </div> */}
           </div>
-
         </div>
 
         {/* Progress Bar */}
         <div className="mb-8">
           <div className="w-full bg-slate-700 rounded-full h-2">
-            <div
-              className="bg-gradient-to-r from-green-400 via-yellow-400 to-red-400 h-2 rounded-full"
-              style={{ width: "100%" }}
-            ></div>
+            <div className="bg-gradient-to-r from-green-400 w-full via-yellow-400 to-red-400 h-2 rounded-full"></div>
           </div>
         </div>
 
+        {/* ✅ Error Message */}
+        {queryError && (
+          <div className="text-red-500 text-center py-4">
+            Failed to fetch signals. Please check your connection.
+          </div>
+        )}
+
         {/* Data Table */}
-        {loading ? (
+        {isLoading ? (
           <div className="flex justify-center items-center py-20">
             <Loader className="animate-spin text-green-400 h-8 w-8 mr-4" />
             <span>Please wait while we fetch the signals...</span>
@@ -387,4 +394,3 @@ const Index = () => {
 };
 
 export default Index;
-
