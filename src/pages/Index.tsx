@@ -310,7 +310,7 @@ const Index = () => {
         {/* Title Section */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-green-400 mb-4 text-center">
-            Signals
+            Signals - Pancake.finance
           </h1>
           <div className="text-center text-gray-400 mb-6">
             <CountdownDisplay onRefresh={refetch} refreshInterval={30} />
