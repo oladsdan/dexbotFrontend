@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import { CountdownDisplay } from "@/components/ui/CountdownDisplay";
 import { useQuery } from "@tanstack/react-query";
+import { DateTime } from "luxon";
 
 export interface Signal {
   pairName: string;
@@ -42,7 +43,6 @@ const Index = () => {
   // const API_URL = "http://188.165.71.103:3000/api/signals"; // Your backend API
   // const API_URL = "/api/signals"; // Your backend API
   // const API_URL = "https://pancake-signalsugragph.onrender.com/api/signals"; // Your backend API
-
 
   const fetchSignals = async () => {
     const { data } = await axios.get(API_URL);
@@ -113,17 +113,63 @@ const Index = () => {
   }, []);
 
   const formatTime = (date: Date) => {
-    return date.toLocaleString("en-GB", {
+    const options: Intl.DateTimeFormatOptions = {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
       hour: "2-digit",
       minute: "2-digit",
       second: "2-digit",
-      timeZone: timezone || "Asia/Singapore", // default to Asia/Singapore if timezone is not set// adds GMT+08 or SGT
-    });
+      hour12: false,
+      timeZone: timezone || "Asia/Singapore",
+    };
+
+    try {
+      const parts = new Intl.DateTimeFormat("en-GB", options).formatToParts(
+        date
+      );
+      const day = parts.find((p) => p.type === "day")?.value;
+      const month = parts.find((p) => p.type === "month")?.value;
+      const year = parts.find((p) => p.type === "year")?.value;
+      const hour = parts.find((p) => p.type === "hour")?.value;
+      const minute = parts.find((p) => p.type === "minute")?.value;
+      const second = parts.find((p) => p.type === "second")?.value;
+
+      return `${day}.${month}.${year} ${hour}:${minute}:${second}`;
+    } catch (err) {
+      // fallback to UTC if invalid timezone
+      const fallbackOptions = { ...options, timeZone: "UTC" };
+      const parts = new Intl.DateTimeFormat(
+        "en-GB",
+        fallbackOptions
+      ).formatToParts(date);
+      const day = parts.find((p) => p.type === "day")?.value;
+      const month = parts.find((p) => p.type === "month")?.value;
+      const year = parts.find((p) => p.type === "year")?.value;
+      const hour = parts.find((p) => p.type === "hour")?.value;
+      const minute = parts.find((p) => p.type === "minute")?.value;
+      const second = parts.find((p) => p.type === "second")?.value;
+
+      return `${day}.${month}.${year} ${hour}:${minute}:${second}`;
+    }
   };
 
+  const parseCustomDateString = (dateString: string): string => {
+    if (!dateString) return "N/A";
+
+    const dt = DateTime.fromFormat(dateString, "yyyy.MM.dd HH:mm:ss", {
+      zone: timezone || "Asia/Singapore",
+    });
+
+    if (!dt.isValid) {
+      console.error("Invalid DateTime:", dt.invalidExplanation);
+      return "Invalid Date";
+    }
+
+    return dt
+      .setZone(timezone || "Asia/Singapore")
+      .toFormat("dd.MM.yyyy HH:mm:ss");
+  };
   const sortedSignals = useMemo(() => {
     // Define the order of signal types
     const signalOrder = {
@@ -216,14 +262,15 @@ const Index = () => {
       // cell: ({ row }) =>
       //   row.original.combinedPrediction || row.original.lstmPrediction || "N/A", // Modified line,
       cell: ({ row }) => {
-        const aiPrice = Number(row.original.combinedPrediction || row.original.lstmPrediction);
+        const aiPrice = Number(
+          row.original.combinedPrediction || row.original.lstmPrediction
+        );
 
         const actualPrice = Number(row.original.currentPrice);
 
         // const percentageChange = ((aiPrice - actualPrice) / actualPrice) * 100;
         const priceChange = aiPrice - actualPrice;
         let colorClass = "text-white";
-
 
         if (priceChange > 0) colorClass = "text-green-400";
         else if (priceChange < 0) colorClass = "text-red-400";
@@ -234,21 +281,20 @@ const Index = () => {
               {aiPrice ? aiPrice : "N/A"}
             </span>
           </div>
-        )
-
-      }
-        
-
+        );
+      },
     },
     {
       accessorKey: "prediction Time",
       header: "Prediction Time",
-      cell: ({ row }) => row.original.predictedTime || "N/A",
+      cell: ({ row }) =>
+        parseCustomDateString(row.original.predictedTime) || "N/A",
     },
     {
       accessorKey: "expiry Time",
       header: "expiry Time",
-      cell: ({ row }) => row.original.expiryTime || "N/A",
+      cell: ({ row }) =>
+        parseCustomDateString(row.original.expiryTime) || "N/A",
     },
     // {
     //   accessorKey: "AI-XGBOOST",
