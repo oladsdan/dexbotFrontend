@@ -232,12 +232,12 @@ const Index = () => {
     },
     {
       accessorKey: "currentPrice",
-      header: "CURRENT PRICE (USD)",
+      header: "CURRENT PRICE (BUSD)",
       cell: (info) => parseFloat(info.getValue()).toFixed(8) || "N/A",
     },
     {
       accessorKey: "AI-LSTM",
-      header: "AI-Prediction(USD)",
+      header: "AI-Prediction(BUSD)",
       cell: ({ row }) =>
         row.original.combinedPrediction || row.original.lstmPrediction || "N/A", // Modified line,
     },
