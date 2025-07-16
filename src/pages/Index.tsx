@@ -10,7 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 export interface Signal {
   pairName: string;
   signal: string;
-  currentPrice: string;
+  currentPrice: string | number;
   timeTakenFor1_6_percent: string;
   // lstmPrediction?: string | number;
   // xgboostPrediction?: string | number;
@@ -43,31 +43,6 @@ const Index = () => {
   // const API_URL = "/api/signals"; // Your backend API
   // const API_URL = "https://pancake-signalsugragph.onrender.com/api/signals"; // Your backend API
 
-  // const fetchSignals = async () => {
-  //   try {
-  //     const response = await fetch(API_URL);
-  //     if (!response.ok) {
-  //       throw new Error(`HTTP error! status: ${response.status}`);
-  //     }
-  //     const data = await response.json();
-
-  //     if (!Array.isArray(data)) {
-  //       throw new Error("API response is not an array");
-  //     }
-  //     setSignals(data);
-  //     setLoading(false);
-  //   } catch (err) {
-  //     console.error("Failed to fetch signals:", err);
-  //     setError("signal is loading. please wait while it fetches.");
-  //     setSignals([]); // ensure `signals` remains an array
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  //  useEffect(() => {
-  //   fetchSignals();
-  // }, []);
 
   const fetchSignals = async () => {
     const { data } = await axios.get(API_URL);
@@ -238,8 +213,32 @@ const Index = () => {
     {
       accessorKey: "AI-LSTM",
       header: "AI-Prediction(BUSD)",
-      cell: ({ row }) =>
-        row.original.combinedPrediction || row.original.lstmPrediction || "N/A", // Modified line,
+      // cell: ({ row }) =>
+      //   row.original.combinedPrediction || row.original.lstmPrediction || "N/A", // Modified line,
+      cell: ({ row }) => {
+        const aiPrice = Number(row.original.combinedPrediction || row.original.lstmPrediction);
+
+        const actualPrice = Number(row.original.currentPrice);
+
+        // const percentageChange = ((aiPrice - actualPrice) / actualPrice) * 100;
+        const priceChange = aiPrice - actualPrice;
+        let colorClass = "text-white";
+
+
+        if (priceChange > 0) colorClass = "text-green-400";
+        else if (priceChange < 0) colorClass = "text-red-400";
+
+        return (
+          <div className="flex items-center">
+            <span className={`font-medium uppercase ${colorClass}`}>
+              {aiPrice ? aiPrice : "N/A"}
+            </span>
+          </div>
+        )
+
+      }
+        
+
     },
     {
       accessorKey: "prediction Time",
