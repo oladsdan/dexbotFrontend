@@ -7,6 +7,8 @@ import { DataTable } from "@/components/ui/data-table";
 import { CountdownDisplay } from "@/components/ui/CountdownDisplay";
 import { useQuery } from "@tanstack/react-query";
 import { DateTime } from "luxon";
+import TimezoneSelector from "@/components/TimezoneSelector";
+import CurrentTimeDisplay from "@/components/CurrentTimeDisplay";
 
 export interface Signal {
   pairName: string;
@@ -27,15 +29,10 @@ export interface Signal {
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [secondsLeft, setSecondsLeft] = useState(30);
-  const [secondsFetched, setSecondsFetched] = useState(35);
   // const [signals, setSignals] = useState([]);
-  const [globalSignals, setGlobalSignals] = useState([]);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [selectedSignal, setSelectedSignal] = useState(null);
   const [country, setCountry] = useState("");
   const [timezone, setTimezone] = useState("");
+  const [selectedTimezone, setSelectedTimezone] = useState("UTC");
 
   // const API_URL = "https://pancakeswapsignal.onrender.com/api/signals"; // Your backend API
   // const API_URL = "https://projectmlpancakeswap.onrender.com/api/signals"; // Your backend API
@@ -74,10 +71,10 @@ const Index = () => {
           setCountry(response.data.country);
           setTimezone(response.data.timezone.id);
         } else {
-          setError("Failed to fetch country.");
+          console.log("Failed to fetch country.");
         }
       } catch (err) {
-        setError("Error fetching location by IP.");
+        console.log("Error fetching location by IP.");
       }
     };
 
@@ -155,10 +152,11 @@ const Index = () => {
   };
 
   const parseCustomDateString = (dateString: string): string => {
-    if (!dateString) return "N/A";
+    if (!dateString || dateString === "N/A") return "N/A";
 
+    // Parse as UTC+1
     const dt = DateTime.fromFormat(dateString, "yyyy.MM.dd HH:mm:ss", {
-      zone: timezone || "Asia/Singapore",
+      zone: "UTC+1", // your input is UTC+1
     });
 
     if (!dt.isValid) {
@@ -166,10 +164,12 @@ const Index = () => {
       return "Invalid Date";
     }
 
+    // Convert to the target timezone (or Asia/Singapore)
     return dt
       .setZone(timezone || "Asia/Singapore")
       .toFormat("dd.MM.yyyy HH:mm:ss");
   };
+
   const sortedSignals = useMemo(() => {
     // Define the order of signal types
     const signalOrder = {
@@ -361,7 +361,7 @@ const Index = () => {
             <CountdownDisplay onRefresh={refetch} refreshInterval={30} />
           </div>
           <p className="text-gray-400">
-            Time: {formatTime(currentTime)} ({country})
+            Time: <CurrentTimeDisplay timezone={timezone} />
           </p>
         </div>
 
@@ -377,6 +377,15 @@ const Index = () => {
               className="pl-10 bg-slate-700 border-slate-600 text-white placeholder-gray-400"
             />
           </div>
+        </div>
+
+        {/* Country Selector */}
+
+        <div className="flex justify-center items-center mb-8">
+          <TimezoneSelector
+            onTimezoneChange={setTimezone}
+            initialTimezone={timezone}
+          />
         </div>
 
         {/* Signal Statistics */}
