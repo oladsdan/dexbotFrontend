@@ -129,7 +129,7 @@ export function DataTable<T>({ columns, data }: DataTableProps<T>) {
                   {headerGroup.headers.map((header) => (
                     <TableHead
                       key={header.id}
-                      className={`text-left text-sm font-medium text-gray-300 uppercase tracking-wider text-nowrap px-4 py-3 ${
+                      className={`text-right text-sm font-medium text-gray-300 uppercase tracking-wider text-nowrap px-4 py-3 ${
                         header.column.id === "estimatedNext24hChange"
                           ? "bg-blue-900/30"
                           : ""
@@ -193,7 +193,7 @@ export function DataTable<T>({ columns, data }: DataTableProps<T>) {
                         return (
                           <TableCell
                             key={cell.id}
-                            className="px-4 py-3 whitespace-nowrap text-sm"
+                            className="px-4 py-3 whitespace-nowrap text-right text-sm"
                           >
                             {index + 1}.
                           </TableCell>
@@ -202,7 +202,7 @@ export function DataTable<T>({ columns, data }: DataTableProps<T>) {
                       return (
                         <TableCell
                           key={cell.id}
-                          className={`px-4 py-3 whitespace-nowrap text-sm ${
+                          className={`px-4 py-3 whitespace-nowrap text-right text-sm ${
                             cell.column.id === "estimatedNext24hChange"
                               ? "bg-blue-900/30"
                               : ""
@@ -239,7 +239,7 @@ export function DataTable<T>({ columns, data }: DataTableProps<T>) {
                     {footerGroup.headers.map((header) => (
                       <TableCell
                         key={header.id}
-                        className="px-4 py-3 text-sm font-medium"
+                        className="px-4 py-3 text-sm font-medium text-right"
                       >
                         {header.isPlaceholder
                           ? null

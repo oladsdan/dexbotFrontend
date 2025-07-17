@@ -224,6 +224,7 @@ const Index = () => {
       accessorKey: "serialNo",
       header: "S/NO",
       cell: (info) => `${info.row.index + 1}.`,
+      enableSorting: false,
     },
     {
       accessorKey: "pairName",
@@ -243,7 +244,7 @@ const Index = () => {
         // else if (signal === "exit") colorClass = "text-orange-400";
 
         return (
-          <div className="flex items-center">
+          <div className="flex items-center justify-end">
             <span className={`font-medium uppercase ${colorClass}`}>
               {signal.toLowerCase() === "hold" ? "No Action" : signal}
             </span>
@@ -257,8 +258,10 @@ const Index = () => {
       cell: (info) => parseFloat(info.getValue()).toFixed(8) || "N/A",
     },
     {
-      accessorKey: "AI-LSTM",
+      accessorKey: "aiPrediction",
       header: "AI-Prediction(BUSD)",
+      accessorFn: (row) =>
+        Number(row.combinedPrediction || row.lstmPrediction || 0),
       // cell: ({ row }) =>
       //   row.original.combinedPrediction || row.original.lstmPrediction || "N/A", // Modified line,
       cell: ({ row }) => {
@@ -276,7 +279,7 @@ const Index = () => {
         else if (priceChange < 0) colorClass = "text-red-400";
 
         return (
-          <div className="flex items-center">
+          <div className="flex items-center justify-end">
             <span className={`font-medium uppercase ${colorClass}`}>
               {aiPrice ? aiPrice : "N/A"}
             </span>
@@ -285,14 +288,59 @@ const Index = () => {
       },
     },
     {
-      accessorKey: "prediction Time",
+      accessorKey: "priceDifference",
+      header: "Price Difference (%)",
+      accessorFn: (row) => {
+        const predicted = Number(row.combinedPrediction || row.lstmPrediction);
+        const current = Number(row.currentPrice);
+        if (!predicted || !current) return null;
+        return ((predicted - current) / current) * 100;
+      },
+      cell: ({ row }) => {
+        const predicted = Number(
+          row.original.combinedPrediction || row.original.lstmPrediction
+        );
+        const current = Number(row.original.currentPrice);
+        if (!predicted || !current) return "N/A";
+
+        const diffPercent = ((predicted - current) / current) * 100;
+        const colorClass =
+          diffPercent > 0
+            ? "text-green-400"
+            : diffPercent < 0
+            ? "text-red-400"
+            : "text-white";
+
+        return (
+          <div className="flex items-center justify-end">
+            <span className={`font-medium ${colorClass}`}>
+              {diffPercent.toFixed(2)}%
+            </span>
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "predictedTime",
       header: "Prediction Time",
+      accessorFn: (row) => {
+        if (!row.predictedTime || row.predictedTime === "N/A") return null;
+        return DateTime.fromFormat(row.predictedTime, "yyyy.MM.dd HH:mm:ss", {
+          zone: "UTC+1",
+        }).toMillis(); // sorting uses this timestamp
+      },
       cell: ({ row }) =>
         parseCustomDateString(row.original.predictedTime) || "N/A",
     },
     {
-      accessorKey: "expiry Time",
+      accessorKey: "expiryTime",
       header: "expiry Time",
+      accessorFn: (row) => {
+        if (!row.expiryTime || row.expiryTime === "N/A") return null;
+        return DateTime.fromFormat(row.expiryTime, "yyyy.MM.dd HH:mm:ss", {
+          zone: "UTC+1",
+        }).toMillis(); // sorting uses this timestamp
+      },
       cell: ({ row }) =>
         parseCustomDateString(row.original.expiryTime) || "N/A",
     },
@@ -355,7 +403,7 @@ const Index = () => {
         {/* Title Section */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-green-400 mb-4 text-center">
-            Signals - Pancake.finance
+            Signals - <span className="block sm:inline">Pancake.finance</span>
           </h1>
           <div className="text-center text-gray-400 mb-6">
             <CountdownDisplay onRefresh={refetch} refreshInterval={30} />
