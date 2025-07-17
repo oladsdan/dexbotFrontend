@@ -233,7 +233,7 @@ const Index = () => {
     },
     {
       accessorKey: "signal",
-      header: "CURRENT SIGNAL",
+      header: "CURRENT SIGNAL (TECHNICAL INDICATORS)",
       cell: ({ row }) => {
         const signal = row.original.signal.toLowerCase();
         let colorClass = "text-white"; // default color
