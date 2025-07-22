@@ -24,6 +24,13 @@ export interface Signal {
     time: string;
     price: string;
   };
+  now_diff_percent?: string | number;
+  hit_status: string;
+  hit_time: string;
+  target_diff_percent?: string | number;
+  direction: string;
+  
+
 }
 
 const Index = () => {
@@ -320,6 +327,22 @@ const Index = () => {
         );
       },
     },
+
+    { 
+      accessorKey: "now_diff_percent",
+      header: "NOW DIFF(%)",
+      cell: ({ row }) => row.original.now_diff_percent
+
+
+    },
+     { 
+      accessorKey: "target_diff_percent",
+      header: "TARGET DIFF(%)",
+      cell: ({ row }) => row.original.target_diff_percent
+
+
+    },
+
     {
       accessorKey: "predictedTime",
       header: "Prediction Time",
@@ -344,6 +367,21 @@ const Index = () => {
       cell: ({ row }) =>
         parseCustomDateString(row.original.expiryTime) || "N/A",
     },
+    { 
+      accessorKey: "hit_status",
+      header: "HIT STATUS",
+      cell: ({ row }) => row.original.hit_status
+
+
+    },
+     { 
+      accessorKey: "hit_time",
+      header: "HIT TIME",
+      cell: ({ row }) => row.original.hit_time
+
+
+    },
+    
     // {
     //   accessorKey: "AI-XGBOOST",
     //   header: "XGBoost Prediction",
