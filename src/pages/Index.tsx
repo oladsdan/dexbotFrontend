@@ -342,7 +342,24 @@ const Index = () => {
     { 
       accessorKey: "now_diff_percent",
       header: "NOW DIFF(%)",
-      cell: ({ row }) => row.original.now_diff_percent
+      cell: ({ row }) => {
+        const priceDifference = row.original.now_diff_percent;
+
+        let colorClass = "text-white";
+
+        if (priceDifference > 0) colorClass = "text-green-400";
+        else if (priceDifference < 0) colorClass = "text-red-400";
+
+        return (
+          <div className="flex items-center justify-end">
+            <span className={`font-medium uppercase ${colorClass}`}>
+              {priceDifference ? priceDifference : "N/A"}
+            </span>
+          </div>
+        );
+
+
+      } 
 
 
     },
