@@ -27,7 +27,9 @@ export interface Signal {
   now_diff_percent?: string | number;
   hit_status: string;
   hit_time: string;
+
   target_diff_percent?: string | number;
+  target_price_usdt: string | number;
   direction: string;
   
 
@@ -294,6 +296,15 @@ const Index = () => {
         );
       },
     },
+
+    { 
+      accessorKey: "target_price_usdt",
+      header: "TARGET PRICE (BUSD)",
+      cell: ({ row }) => row.original.target_price_usdt
+
+
+    },
+    
     {
       accessorKey: "priceDifference",
       header: "Price Difference (%)",
@@ -352,6 +363,14 @@ const Index = () => {
           zone: "UTC+1",
         }).toMillis(); // sorting uses this timestamp
       },
+/*************  ✨ Windsurf Command ⭐  *************/
+/**
+ * Cell renderer function for displaying the predicted time.
+ * Parses the predicted time from the row's original data using the custom date parser.
+ * If the predicted time is not available or invalid, it returns "N/A".
+ */
+
+/*******  bf0ddb0b-3c93-4565-9e22-75c77c421cf6  *******/
       cell: ({ row }) =>
         parseCustomDateString(row.original.predictedTime) || "N/A",
     },
@@ -370,16 +389,45 @@ const Index = () => {
     { 
       accessorKey: "hit_status",
       header: "HIT STATUS",
-      cell: ({ row }) => row.original.hit_status
+      cell: ({ row }) => {
+        let colorClass;
+        if (row.original.hit_status === "Not Reached" ) colorClass ="text-red-400";
+        else colorClass = "text-green-400";
+        return (
+          <div className="flex items-center justify-end">
+            <span className={`font-medium ${colorClass}`}>
+              {row.original.hit_status}
+            </span>
+          </div>
+        );
+      }
 
 
     },
      { 
       accessorKey: "hit_time",
       header: "HIT TIME",
-      cell: ({ row }) => row.original.hit_time
+      accessorFn: (row) => {
+        if (row.hit_time === "Not Reached") return row.hit_time;
+        return DateTime.fromFormat(row.hit_time, "yyyy.MM.dd HH:mm:ss", {
+          zone: "UTC+1",
+        }).toMillis(); // sorting uses this timestamp
+      },
 
+      cell: ({ row }) => {
+        parseCustomDateString(row.original.hit_time) || "Not Reached";
 
+        let colorClass;
+        if (row.original.hit_time === "Not Reached" ) colorClass ="text-red-400";
+        else colorClass = "text-green-400";
+        return (
+          <div className="flex items-center justify-end">
+            <span className={`font-medium ${colorClass}`}>
+              {row.original.hit_time}
+            </span>
+          </div>
+        );
+      }
     },
     
     // {
