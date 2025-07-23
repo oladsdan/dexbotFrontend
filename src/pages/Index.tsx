@@ -346,7 +346,23 @@ const Index = () => {
     {
       accessorKey: "target_diff_percent",
       header: "TARGET DIFF(%)",
-      cell: ({ row }) => row.original.target_diff_percent,
+      // cell: ({ row }) => row.original.target_diff_percent,
+      cell: ({ row }) => {
+         const PredictedTimePrice = Number(row.original.currentPriceAtPredicition)
+        const TargetPrice = PredictedTimePrice * 1.016
+        const TargetDiff = ((TargetPrice - PredictedTimePrice) / PredictedTimePrice) * 100;
+        let colorClass = "text-white";
+
+        if (TargetDiff > 0) colorClass = "text-green-400";
+        else if (TargetDiff < 0) colorClass = "text-red-400";
+        return (
+          <div className="flex items-center">
+            <span className={`font-medium ${colorClass}`}>
+              {TargetDiff ? `${TargetDiff}%` : "N/A"}
+            </span>
+          </div>
+        )
+      }
     },
 
     {
