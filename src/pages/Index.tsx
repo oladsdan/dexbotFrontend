@@ -333,7 +333,7 @@ const Index = () => {
       header: "TARGET PRICE (USDT)",
       cell: ({ row }) => {
         const PredictedTimePrice = Number(row.original.currentPriceAtPredicition)
-        const TargetPrice = PredictedTimePrice * 1.016
+        const TargetPrice = (PredictedTimePrice * 1.016).toFixed(5)
         return (
           <div className="flex items-center">
             <span className={`font-medium uppercase text-white`}>
