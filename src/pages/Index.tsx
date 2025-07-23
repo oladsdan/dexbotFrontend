@@ -475,11 +475,11 @@ const Index = () => {
     //     );
     //   },
     // },
-    {
-      accessorKey: "currentPriceAtPredicition",
-      header: "Prediction Time Price (USDT)",
-      cell: ({ row }) => row.original.currentPriceAtPredicition.toFixed(8),
-    },
+    // {
+    //   accessorKey: "currentPriceAtPredicition",
+    //   header: "Prediction Time Price (USDT)",
+    //   cell: ({ row }) => row.original.currentPriceAtPredicition.toFixed(8),
+    // },
     
    
     // {
