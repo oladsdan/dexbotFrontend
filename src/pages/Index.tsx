@@ -31,8 +31,6 @@ export interface Signal {
   target_diff_percent?: string | number;
   target_price_usdt: string | number;
   direction: string;
-  
-
 }
 
 const Index = () => {
@@ -231,18 +229,18 @@ const Index = () => {
   const columns = [
     {
       accessorKey: "serialNo",
-      header: "S/NO",
+      header: "#",
       cell: (info) => `${info.row.index + 1}.`,
       enableSorting: false,
     },
     {
       accessorKey: "pairName",
-      header: "TOKEN (NAME)",
+      header: " ASSET (SYMBOL)",
       cell: (info) => `${info.getValue().split("/")[0]}`,
     },
     {
       accessorKey: "signal",
-      header: "CURRENT SIGNAL (TECHNICAL INDICATORS)",
+      header: "SIGNAL",
       cell: ({ row }) => {
         const signal = row.original.signal.toLowerCase();
         let colorClass = "text-white"; // default color
@@ -262,13 +260,8 @@ const Index = () => {
       },
     },
     {
-      accessorKey: "currentPrice",
-      header: "CURRENT PRICE (BUSD)",
-      cell: (info) => parseFloat(info.getValue()).toFixed(8) || "N/A",
-    },
-    {
       accessorKey: "aiPrediction",
-      header: "AI-Prediction(BUSD)",
+      header: "AI Prediction (USDT)",
       accessorFn: (row) =>
         Number(row.combinedPrediction || row.lstmPrediction || 0),
       // cell: ({ row }) =>
@@ -296,15 +289,68 @@ const Index = () => {
         );
       },
     },
-
-    { 
-      accessorKey: "target_price_usdt",
-      header: "TARGET PRICE (BUSD)",
-      cell: ({ row }) => row.original.target_price_usdt
-
-
+    {
+      accessorKey: "predictedTimePrice",
+      header: "Prediction Time Price (USDT)",
+      accessorFn: (row) => {
+        if (!row.predictedTime || row.predictedTime === "N/A") return null;
+        return DateTime.fromFormat(row.predictedTime, "yyyy.MM.dd HH:mm:ss", {
+          zone: "UTC+1",
+        }).toMillis();
+      },
+      cell: ({ row }) =>
+        // parseCustomDateString(row.original.predictedTime) || "N/A",
+        "N/A",
     },
-    
+    {
+      accessorKey: "target_price_usdt",
+      header: "TARGET PRICE (USDT)",
+      cell: ({ row }) => row.original.target_price_usdt,
+    },
+    {
+      accessorKey: "target_diff_percent",
+      header: "TARGET DIFF(%)",
+      cell: ({ row }) => row.original.target_diff_percent,
+    },
+    {
+      accessorKey: "currentPrice",
+      header: "CURRENT PRICE (USDT)",
+      cell: ({ row }) => {
+        const currentPrice = parseFloat(row.original.currentPrice).toFixed(8);
+        let colorClass = "text-red-400";
+        if (row.original.direction === "UP") colorClass = "text-green-400";
+        return (
+          <div className="flex items-center justify-end">
+            <span className={`font-medium uppercase ${colorClass}`}>
+              {currentPrice ? currentPrice : "N/A"}
+            </span>
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "now_diff_percent",
+      header: "NOW DIFF(%)",
+      cell: ({ row }) => {
+        const priceDifference = row.original.now_diff_percent;
+
+        let colorClass = "text-white";
+
+        if (priceDifference.includes("-")) {
+          colorClass = "text-red-400";
+        } else {
+          colorClass = "text-green-400";
+        }
+
+        return (
+          <div className="flex items-center justify-end">
+            <span className={`font-medium uppercase ${colorClass}`}>
+              {priceDifference ? priceDifference : "N/A"}
+            </span>
+          </div>
+        );
+      },
+    },
     {
       accessorKey: "priceDifference",
       header: "Price Difference (%)",
@@ -338,62 +384,29 @@ const Index = () => {
         );
       },
     },
-
-    { 
-      accessorKey: "now_diff_percent",
-      header: "NOW DIFF(%)",
-      cell: ({ row }) => {
-        const priceDifference = row.original.now_diff_percent;
-
-        let colorClass = "text-white";
-
-        if (priceDifference > 0) colorClass = "text-green-400";
-        else if (priceDifference < 0) colorClass = "text-red-400";
-
-        return (
-          <div className="flex items-center justify-end">
-            <span className={`font-medium uppercase ${colorClass}`}>
-              {priceDifference ? priceDifference : "N/A"}
-            </span>
-          </div>
-        );
-
-
-      } 
-
-
-    },
-     { 
-      accessorKey: "target_diff_percent",
-      header: "TARGET DIFF(%)",
-      cell: ({ row }) => row.original.target_diff_percent
-
-
-    },
-
     {
       accessorKey: "predictedTime",
-      header: "Prediction Time",
+      header: "Predicted At",
       accessorFn: (row) => {
         if (!row.predictedTime || row.predictedTime === "N/A") return null;
         return DateTime.fromFormat(row.predictedTime, "yyyy.MM.dd HH:mm:ss", {
           zone: "UTC+1",
         }).toMillis(); // sorting uses this timestamp
       },
-/*************  ✨ Windsurf Command ⭐  *************/
-/**
- * Cell renderer function for displaying the predicted time.
- * Parses the predicted time from the row's original data using the custom date parser.
- * If the predicted time is not available or invalid, it returns "N/A".
- */
+      /*************  ✨ Windsurf Command ⭐  *************/
+      /**
+       * Cell renderer function for displaying the predicted time.
+       * Parses the predicted time from the row's original data using the custom date parser.
+       * If the predicted time is not available or invalid, it returns "N/A".
+       */
 
-/*******  bf0ddb0b-3c93-4565-9e22-75c77c421cf6  *******/
+      /*******  bf0ddb0b-3c93-4565-9e22-75c77c421cf6  *******/
       cell: ({ row }) =>
         parseCustomDateString(row.original.predictedTime) || "N/A",
     },
     {
       accessorKey: "expiryTime",
-      header: "expiry Time",
+      header: "Expires At",
       accessorFn: (row) => {
         if (!row.expiryTime || row.expiryTime === "N/A") return null;
         return DateTime.fromFormat(row.expiryTime, "yyyy.MM.dd HH:mm:ss", {
@@ -403,12 +416,13 @@ const Index = () => {
       cell: ({ row }) =>
         parseCustomDateString(row.original.expiryTime) || "N/A",
     },
-    { 
+    {
       accessorKey: "hit_status",
       header: "HIT STATUS",
       cell: ({ row }) => {
         let colorClass;
-        if (row.original.hit_status === "Not Reached" ) colorClass ="text-red-400";
+        if (row.original.hit_status === "Not Reached")
+          colorClass = "text-red-400";
         else colorClass = "text-green-400";
         return (
           <div className="flex items-center justify-end">
@@ -417,11 +431,9 @@ const Index = () => {
             </span>
           </div>
         );
-      }
-
-
+      },
     },
-     { 
+    {
       accessorKey: "hit_time",
       header: "HIT TIME",
       accessorFn: (row) => {
@@ -432,10 +444,11 @@ const Index = () => {
       },
 
       cell: ({ row }) => {
-        parseCustomDateString(row.original.hit_time) || "Not Reached";
+        // parseCustomDateString(row.original.hit_time) || "Not Reached";
 
         let colorClass;
-        if (row.original.hit_time === "Not Reached" ) colorClass ="text-red-400";
+        if (row.original.hit_time === "Not Reached")
+          colorClass = "text-red-400";
         else colorClass = "text-green-400";
         return (
           <div className="flex items-center justify-end">
@@ -444,9 +457,9 @@ const Index = () => {
             </span>
           </div>
         );
-      }
+      },
     },
-    
+
     // {
     //   accessorKey: "AI-XGBOOST",
     //   header: "XGBoost Prediction",
