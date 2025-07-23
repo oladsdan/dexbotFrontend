@@ -472,7 +472,7 @@ const Index = () => {
         const PredictedTimePrice = Number(row.original.currentPriceAtPredicition)
         const TargetPrice = (PredictedTimePrice * 1.016).toFixed(8)
         return (
-          <div className="flex items-center">
+          <div className="flex items-end">
             <span className={`font-medium uppercase text-white`}>
               {TargetPrice ? TargetPrice : "N/A"}
             </span>
