@@ -10,6 +10,7 @@ import { DateTime } from "luxon";
 import TimezoneSelector from "@/components/TimezoneSelector";
 import CurrentTimeDisplay from "@/components/CurrentTimeDisplay";
 import monitoredTokens from "@/monitodTokens.json";
+import { access } from "fs";
 
 export interface Signal {
   pairName: string;
@@ -257,25 +258,14 @@ const Index = () => {
       },
     },
     {
-      accessorKey: "signal",
-      header: "SIGNAL",
-      cell: ({ row }) => {
-        const signal = row.original.signal.toLowerCase();
-        let colorClass = "text-white"; // default color
-
-        if (signal === "buy") colorClass = "text-green-400";
-        // else if (signal === "sell") colorClass = "text-red-400";
-        else if (signal === "hold") colorClass = "text-yellow-400";
-        // else if (signal === "exit") colorClass = "text-orange-400";
-
-        return (
-          <div className="flex items-center justify-end">
-            <span className={`font-medium uppercase ${colorClass}`}>
-              {signal.toLowerCase() === "hold" ? "No Action" : signal}
-            </span>
-          </div>
-        );
-      },
+      accessorKey: "currentPriceAtPredicition",
+      header: "Prediction Time Price (USDT)",
+      cell: ({ row }) => row.original.currentPriceAtPredicition.toFixed(8),
+    },
+    {
+      accessorKey: "target_price_usdt",
+      header: "TARGET PRICE (USDT)",
+      cell: ({ row }) => Number(row.original.target_price_usdt).toFixed(8),
     },
     {
       accessorKey: "currentPrice",
@@ -293,6 +283,107 @@ const Index = () => {
         );
       },
     },
+
+    {
+      accessorKey: "now_diff_percent",
+      header: "NOW DIFF(%)",
+      cell: ({ row }) => {
+        const priceDifference = row.original.now_diff_percent;
+
+        let colorClass = "text-white";
+
+        if (priceDifference.includes("-")) {
+          colorClass = "text-red-400";
+        } else {
+          colorClass = "text-green-400";
+        }
+
+        return (
+          <div className="flex items-center justify-end">
+            <span className={`font-medium uppercase ${colorClass}`}>
+              {priceDifference ? priceDifference : "N/A"}
+            </span>
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "signal",
+      header: "SIGNAL",
+      cell: ({ row }) => {
+        const signal = row.original.signal.toLowerCase();
+        return (
+          <div className="flex items-center justify-end">
+            <Button className={`hover:cursor-pointer text-white uppercase`}>
+              {signal.toLowerCase() === "hold" ? "No Action" : signal}
+            </Button>
+          </div>
+        );
+      },
+    },
+
+    {
+      accessorKey: "target_diff_percent",
+      header: "TARGET DIFF(%)",
+      cell: ({ row }) => row.original.target_diff_percent,
+    },
+
+    {
+      accessorKey: "takeProfitPercentage",
+      header: "TP (%)",
+
+      accessorFn: (row) => {
+        const targetDiff = parseFloat(row.target_diff_percent);
+
+        const tpPercent = targetDiff * 0.85;
+
+        const takeProfitPercentage = `${tpPercent.toFixed(3)}%`;
+
+        if (row.signal === "Buy") {
+          return takeProfitPercentage;
+        }
+      },
+
+      cell: ({ row }) => {
+        const signal = row.original.signal.toLowerCase();
+        const targetDiff = parseFloat(row.original.target_diff_percent);
+
+        const tpPercent = targetDiff * 0.85;
+
+        const takeProfitPercentage = `${tpPercent.toFixed(3)}%`;
+
+        return <span>{signal === "buy" ? takeProfitPercentage : "N/A"}</span>;
+      },
+    },
+
+    {
+      accessorKey: "stopLossPercentage",
+      header: "SL (%)",
+
+      accessorFn: (row) => {
+        const targetDiff = parseFloat(row.target_diff_percent);
+
+         const slPercent = targetDiff * 0.75;
+
+        const stopLossPercentage = `${slPercent.toFixed(3)}%`;
+
+        if (row.signal === "Buy") {
+          return stopLossPercentage;
+        }
+      },
+
+      cell: ({ row }) => {
+        const signal = row.original.signal.toLowerCase();
+        const targetDiff = parseFloat(row.original.target_diff_percent);
+
+        const slPercent = targetDiff * 0.75;
+
+        const stopLossPercentage = `${slPercent.toFixed(3)}%`;
+
+        return <span>{signal === "buy" ? stopLossPercentage : "N/A"}</span>;
+      },
+    },
+
     {
       accessorKey: "aiPrediction",
       header: "Prediction (USDT)",
@@ -323,45 +414,7 @@ const Index = () => {
         );
       },
     },
-    {
-      accessorKey: "currentPriceAtPredicition",
-      header: "Prediction Time Price (USDT)",
-      cell: ({ row }) => row.original.currentPriceAtPredicition.toFixed(8),
-    },
-    {
-      accessorKey: "target_price_usdt",
-      header: "TARGET PRICE (USDT)",
-      cell: ({ row }) => Number(row.original.target_price_usdt).toFixed(8),
-    },
-    {
-      accessorKey: "target_diff_percent",
-      header: "TARGET DIFF(%)",
-      cell: ({ row }) => row.original.target_diff_percent,
-    },
 
-    {
-      accessorKey: "now_diff_percent",
-      header: "NOW DIFF(%)",
-      cell: ({ row }) => {
-        const priceDifference = row.original.now_diff_percent;
-
-        let colorClass = "text-white";
-
-        if (priceDifference.includes("-")) {
-          colorClass = "text-red-400";
-        } else {
-          colorClass = "text-green-400";
-        }
-
-        return (
-          <div className="flex items-center justify-end">
-            <span className={`font-medium uppercase ${colorClass}`}>
-              {priceDifference ? priceDifference : "N/A"}
-            </span>
-          </div>
-        );
-      },
-    },
     {
       accessorKey: "priceDifference",
       header: "Price Difference (%)",
