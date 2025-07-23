@@ -331,7 +331,17 @@ const Index = () => {
     {
       accessorKey: "target_price_usdt",
       header: "TARGET PRICE (USDT)",
-      cell: ({ row }) => Number(row.original.target_price_usdt).toFixed(8),
+      cell: ({ row }) => {
+        const PredictedTimePrice = Number(row.original.currentPriceAtPredicition)
+        const TargetPrice = PredictedTimePrice * 1.016
+        return (
+          <div className="flex items-center">
+            <span className={`font-medium uppercase text-white`}>
+              {TargetPrice ? TargetPrice : "N/A"}
+            </span>
+          </div>
+        )
+      }
     },
     {
       accessorKey: "target_diff_percent",
