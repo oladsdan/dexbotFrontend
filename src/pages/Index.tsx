@@ -265,8 +265,23 @@ const Index = () => {
     {
       accessorKey: "target_price_usdt",
       header: "TARGET PRICE (USDT)",
-      cell: ({ row }) => Number(row.original.target_price_usdt).toFixed(8),
+      cell: ({ row }) => {
+        const PredictedTimePrice = Number(row.original.currentPriceAtPredicition)
+        const TargetPrice = (PredictedTimePrice * 1.016).toFixed(8)
+        return (
+          <div className="">
+            <span className= " text-white">
+              {TargetPrice ? TargetPrice : "N/A"}
+            </span>
+          </div>
+        )
+      }
     },
+    // {
+    //   accessorKey: "target_price_usdt",
+    //   header: "TARGET PRICE (USDT)",
+    //   cell: ({ row }) => Number(row.original.target_price_usdt).toFixed(8),
+    // },
     {
       accessorKey: "currentPrice",
       header: "CURRENT PRICE (USDT)",
@@ -430,80 +445,66 @@ const Index = () => {
       },
     },
 
-    {
-      accessorKey: "aiPrediction",
-      header: "Prediction (USDT)",
-      accessorFn: (row) =>
-        Number(row.combinedPrediction || row.lstmPrediction || 0),
-      // cell: ({ row }) =>
-      //   row.original.combinedPrediction || row.original.lstmPrediction || "N/A", // Modified line,
-      cell: ({ row }) => {
-        const aiPrice = Number(
-          row.original.combinedPrediction || row.original.lstmPrediction
-        );
+    // {
+    //   accessorKey: "aiPrediction",
+    //   header: "Prediction (USDT)",
+    //   accessorFn: (row) =>
+    //     Number(row.combinedPrediction || row.lstmPrediction || 0),
+    //   // cell: ({ row }) =>
+    //   //   row.original.combinedPrediction || row.original.lstmPrediction || "N/A", // Modified line,
+    //   cell: ({ row }) => {
+    //     const aiPrice = Number(
+    //       row.original.combinedPrediction || row.original.lstmPrediction
+    //     );
 
-        const actualPrice = Number(row.original.currentPrice);
+    //     const actualPrice = Number(row.original.currentPrice);
 
-        // const percentageChange = ((aiPrice - actualPrice) / actualPrice) * 100;
-        const priceChange = aiPrice - actualPrice;
-        let colorClass = "text-white";
+    //     // const percentageChange = ((aiPrice - actualPrice) / actualPrice) * 100;
+    //     const priceChange = aiPrice - actualPrice;
+    //     let colorClass = "text-white";
 
-        if (priceChange > 0) colorClass = "text-green-400";
-        else if (priceChange < 0) colorClass = "text-red-400";
+    //     if (priceChange > 0) colorClass = "text-green-400";
+    //     else if (priceChange < 0) colorClass = "text-red-400";
 
-        return (
-          <div className="flex items-center justify-end">
-            <span className={`font-medium uppercase ${colorClass}`}>
-              {aiPrice ? aiPrice : "N/A"}
-            </span>
-          </div>
-        );
-      },
-    },
+    //     return (
+    //       <div className="flex items-center justify-end">
+    //         <span className={`font-medium uppercase ${colorClass}`}>
+    //           {aiPrice ? aiPrice : "N/A"}
+    //         </span>
+    //       </div>
+    //     );
+    //   },
+    // },
     {
       accessorKey: "currentPriceAtPredicition",
       header: "Prediction Time Price (USDT)",
       cell: ({ row }) => row.original.currentPriceAtPredicition.toFixed(8),
     },
-    {
-      accessorKey: "target_price_usdt",
-      header: "TARGET PRICE (USDT)",
-      cell: ({ row }) => {
-        const PredictedTimePrice = Number(row.original.currentPriceAtPredicition)
-        const TargetPrice = (PredictedTimePrice * 1.016).toFixed(8)
-        return (
-          <div className="flex items-end">
-            <span className={`font-medium uppercase text-white`}>
-              {TargetPrice ? TargetPrice : "N/A"}
-            </span>
-          </div>
-        )
-      }
-    },
+    
    
-    {
-      accessorKey: "now_diff_percent",
-      header: "NOW DIFF(%)",
-      cell: ({ row }) => {
-        const priceDifference = row.original.now_diff_percent;
+    // {
+    //   accessorKey: "now_diff_percent",
+    //   header: "NOW DIFF(%)",
+    //   cell: ({ row }) => {
+    //     const priceDifference = row.original.now_diff_percent;
 
-        let colorClass = "text-white";
+    //     let colorClass = "text-white";
 
-        if (priceDifference.includes("-")) {
-          colorClass = "text-red-400";
-        } else {
-          colorClass = "text-green-400";
-        }
+    //     if (priceDifference.includes("-")) {
+    //       colorClass = "text-red-400";
+    //     } else {
+    //       colorClass = "text-green-400";
+    //     }
 
-        return (
-          <div className="flex items-center justify-end">
-            <span className={`font-medium uppercase ${colorClass}`}>
-              {priceDifference ? priceDifference : "N/A"}
-            </span>
-          </div>
-        );
-      },
-    },
+    //     return (
+    //       <div className="flex items-center justify-end">
+    //         <span className={`font-medium uppercase ${colorClass}`}>
+    //           {priceDifference ? priceDifference : "N/A"}
+    //         </span>
+    //       </div>
+    //     );
+    //   },
+    // },
     // {
     //   accessorKey: "priceDifference",
     //   header: "Price Difference (%)",
