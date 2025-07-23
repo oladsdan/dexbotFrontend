@@ -414,38 +414,86 @@ const Index = () => {
         );
       },
     },
+    {
+      accessorKey: "currentPriceAtPredicition",
+      header: "Prediction Time Price (USDT)",
+      cell: ({ row }) => row.original.currentPriceAtPredicition.toFixed(8),
+    },
+    {
+      accessorKey: "target_price_usdt",
+      header: "TARGET PRICE (USDT)",
+      cell: ({ row }) => {
+        const PredictedTimePrice = Number(row.original.currentPriceAtPredicition)
+        const TargetPrice = PredictedTimePrice * 1.016
+        return (
+          <div className="flex items-center">
+            <span className={`font-medium uppercase text-white`}>
+              {TargetPrice ? TargetPrice : "N/A"}
+            </span>
+          </div>
+        )
+      }
+    },
+    {
+      accessorKey: "target_diff_percent",
+      header: "TARGET DIFF(%)",
+      cell: ({ row }) => row.original.target_diff_percent,
+    },
 
     {
-      accessorKey: "priceDifference",
-      header: "Price Difference (%)",
-      accessorFn: (row) => {
-        const predicted = Number(row.target_price_usdt);
-        const current = Number(row.currentPriceAtPredicition);
-        if (!predicted || !current) return null;
-        return ((predicted - current) / current) * 100;
-      },
+      accessorKey: "now_diff_percent",
+      header: "NOW DIFF(%)",
       cell: ({ row }) => {
-        const predicted = Number(row.original.target_price_usdt);
-        const current = Number(row.original.currentPriceAtPredicition);
-        if (!predicted || !current) return "N/A";
+        const priceDifference = row.original.now_diff_percent;
 
-        const diffPercent = ((predicted - current) / current) * 100;
-        const colorClass =
-          diffPercent > 0
-            ? "text-green-400"
-            : diffPercent < 0
-            ? "text-red-400"
-            : "text-white";
+        let colorClass = "text-white";
+
+        if (priceDifference.includes("-")) {
+          colorClass = "text-red-400";
+        } else {
+          colorClass = "text-green-400";
+        }
 
         return (
           <div className="flex items-center justify-end">
-            <span className={`font-medium ${colorClass}`}>
-              {diffPercent.toFixed(2)}%
+            <span className={`font-medium uppercase ${colorClass}`}>
+              {priceDifference ? priceDifference : "N/A"}
             </span>
           </div>
         );
       },
     },
+    // {
+    //   accessorKey: "priceDifference",
+    //   header: "Price Difference (%)",
+    //   accessorFn: (row) => {
+    //     const predicted = Number(row.target_price_usdt);
+    //     const current = Number(row.currentPriceAtPredicition);
+    //     if (!predicted || !current) return null;
+    //     return ((predicted - current) / current) * 100;
+    //   },
+    //   cell: ({ row }) => {
+    //     const predicted = Number(row.original.target_price_usdt);
+    //     const current = Number(row.original.currentPriceAtPredicition);
+    //     if (!predicted || !current) return "N/A";
+
+    //     const diffPercent = ((predicted - current) / current) * 100;
+    //     const colorClass =
+    //       diffPercent > 0
+    //         ? "text-green-400"
+    //         : diffPercent < 0
+    //         ? "text-red-400"
+    //         : "text-white";
+
+    //     return (
+    //       <div className="flex items-center justify-end">
+    //         <span className={`font-medium ${colorClass}`}>
+    //           {diffPercent.toFixed(2)}%
+    //         </span>
+    //       </div>
+    //     );
+    //   },
+    // },
     {
       accessorKey: "predictedTime",
       header: "Predicted At",
