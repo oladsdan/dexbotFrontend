@@ -441,7 +441,8 @@ const Index = () => {
       cell: ({ row }) => {
          const PredictedTimePrice = Number(row.original.currentPriceAtPredicition)
         const TargetPrice = PredictedTimePrice * 1.016
-        const TargetDiff = ((TargetPrice - PredictedTimePrice) / PredictedTimePrice) * 100;
+        let TargetDiff = ((TargetPrice - PredictedTimePrice) / PredictedTimePrice) * 100;
+        TargetDiff = Number(TargetDiff);
         let colorClass = "text-white";
 
         if (TargetDiff > 0) colorClass = "text-green-400";
