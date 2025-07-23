@@ -362,37 +362,37 @@ const Index = () => {
         );
       },
     },
-    {
-      accessorKey: "priceDifference",
-      header: "Price Difference (%)",
-      accessorFn: (row) => {
-        const predicted = Number(row.target_price_usdt);
-        const current = Number(row.currentPriceAtPredicition);
-        if (!predicted || !current) return null;
-        return ((predicted - current) / current) * 100;
-      },
-      cell: ({ row }) => {
-        const predicted = Number(row.original.target_price_usdt);
-        const current = Number(row.original.currentPriceAtPredicition);
-        if (!predicted || !current) return "N/A";
+    // {
+    //   accessorKey: "priceDifference",
+    //   header: "Price Difference (%)",
+    //   accessorFn: (row) => {
+    //     const predicted = Number(row.target_price_usdt);
+    //     const current = Number(row.currentPriceAtPredicition);
+    //     if (!predicted || !current) return null;
+    //     return ((predicted - current) / current) * 100;
+    //   },
+    //   cell: ({ row }) => {
+    //     const predicted = Number(row.original.target_price_usdt);
+    //     const current = Number(row.original.currentPriceAtPredicition);
+    //     if (!predicted || !current) return "N/A";
 
-        const diffPercent = ((predicted - current) / current) * 100;
-        const colorClass =
-          diffPercent > 0
-            ? "text-green-400"
-            : diffPercent < 0
-            ? "text-red-400"
-            : "text-white";
+    //     const diffPercent = ((predicted - current) / current) * 100;
+    //     const colorClass =
+    //       diffPercent > 0
+    //         ? "text-green-400"
+    //         : diffPercent < 0
+    //         ? "text-red-400"
+    //         : "text-white";
 
-        return (
-          <div className="flex items-center justify-end">
-            <span className={`font-medium ${colorClass}`}>
-              {diffPercent.toFixed(2)}%
-            </span>
-          </div>
-        );
-      },
-    },
+    //     return (
+    //       <div className="flex items-center justify-end">
+    //         <span className={`font-medium ${colorClass}`}>
+    //           {diffPercent.toFixed(2)}%
+    //         </span>
+    //       </div>
+    //     );
+    //   },
+    // },
     {
       accessorKey: "predictedTime",
       header: "Predicted At",
