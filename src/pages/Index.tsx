@@ -278,8 +278,24 @@ const Index = () => {
       },
     },
     {
+      accessorKey: "currentPrice",
+      header: "CURRENT PRICE (USDT)",
+      cell: ({ row }) => {
+        const currentPrice = parseFloat(row.original.currentPrice).toFixed(8);
+        let colorClass = "text-red-400";
+        if (row.original.direction === "UP") colorClass = "text-green-400";
+        return (
+          <div className="flex items-center justify-end">
+            <span className={`font-medium uppercase ${colorClass}`}>
+              {currentPrice ? currentPrice : "N/A"}
+            </span>
+          </div>
+        );
+      },
+    },
+    {
       accessorKey: "aiPrediction",
-      header: "AI Prediction (USDT)",
+      header: "Prediction (USDT)",
       accessorFn: (row) =>
         Number(row.combinedPrediction || row.lstmPrediction || 0),
       // cell: ({ row }) =>
@@ -322,22 +338,7 @@ const Index = () => {
       header: "TARGET DIFF(%)",
       cell: ({ row }) => row.original.target_diff_percent,
     },
-    {
-      accessorKey: "currentPrice",
-      header: "CURRENT PRICE (USDT)",
-      cell: ({ row }) => {
-        const currentPrice = parseFloat(row.original.currentPrice).toFixed(8);
-        let colorClass = "text-red-400";
-        if (row.original.direction === "UP") colorClass = "text-green-400";
-        return (
-          <div className="flex items-center justify-end">
-            <span className={`font-medium uppercase ${colorClass}`}>
-              {currentPrice ? currentPrice : "N/A"}
-            </span>
-          </div>
-        );
-      },
-    },
+
     {
       accessorKey: "now_diff_percent",
       header: "NOW DIFF(%)",
