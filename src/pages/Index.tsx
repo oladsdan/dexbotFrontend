@@ -9,6 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import { DateTime } from "luxon";
 import TimezoneSelector from "@/components/TimezoneSelector";
 import CurrentTimeDisplay from "@/components/CurrentTimeDisplay";
+import monitoredTokens from "@/monitodTokens.json";
 
 export interface Signal {
   pairName: string;
@@ -40,6 +41,14 @@ const Index = () => {
   const [country, setCountry] = useState("");
   const [timezone, setTimezone] = useState("");
   const [selectedTimezone, setSelectedTimezone] = useState("UTC");
+
+  const tokenMap = useMemo(() => {
+    const map = new Map();
+    monitoredTokens.monitoredTokens.forEach((token) => {
+      map.set(token.symbol, token.name);
+    });
+    return map;
+  }, []);
 
   // const API_URL = "https://pancakeswapsignal.onrender.com/api/signals"; // Your backend API
   // const API_URL = "https://projectmlpancakeswap.onrender.com/api/signals"; // Your backend API
@@ -187,6 +196,10 @@ const Index = () => {
       // Add other signal types if you have them, e.g., 'Neutral', 'Insufficient Data'
     };
 
+    if (!Array.isArray(signals)) {
+      return [];
+    }
+
     return [...signals].sort((a, b) => {
       const orderA = signalOrder[a.signal] || 99; // Default to a high number if signal type is unknown
       const orderB = signalOrder[b.signal] || 99;
@@ -236,7 +249,12 @@ const Index = () => {
     {
       accessorKey: "pairName",
       header: " ASSET (SYMBOL)",
-      cell: (info) => `${info.getValue().split("/")[0]}`,
+      cell: (info) => {
+        const pairName = info.getValue();
+        const symbol = pairName.split("/")[0];
+        const assetName = tokenMap.get(symbol) || symbol;
+        return `${assetName} (${symbol})`;
+      },
     },
     {
       accessorKey: "signal",
@@ -290,22 +308,14 @@ const Index = () => {
       },
     },
     {
-      accessorKey: "predictedTimePrice",
+      accessorKey: "currentPriceAtPredicition",
       header: "Prediction Time Price (USDT)",
-      accessorFn: (row) => {
-        if (!row.predictedTime || row.predictedTime === "N/A") return null;
-        return DateTime.fromFormat(row.predictedTime, "yyyy.MM.dd HH:mm:ss", {
-          zone: "UTC+1",
-        }).toMillis();
-      },
-      cell: ({ row }) =>
-        // parseCustomDateString(row.original.predictedTime) || "N/A",
-        "N/A",
+      cell: ({ row }) => row.original.currentPriceAtPredicition.toFixed(8),
     },
     {
       accessorKey: "target_price_usdt",
       header: "TARGET PRICE (USDT)",
-      cell: ({ row }) => row.original.target_price_usdt,
+      cell: ({ row }) => Number(row.original.target_price_usdt).toFixed(8),
     },
     {
       accessorKey: "target_diff_percent",
@@ -355,16 +365,14 @@ const Index = () => {
       accessorKey: "priceDifference",
       header: "Price Difference (%)",
       accessorFn: (row) => {
-        const predicted = Number(row.combinedPrediction || row.lstmPrediction);
-        const current = Number(row.currentPrice);
+        const predicted = Number(row.target_price_usdt);
+        const current = Number(row.currentPriceAtPredicition);
         if (!predicted || !current) return null;
         return ((predicted - current) / current) * 100;
       },
       cell: ({ row }) => {
-        const predicted = Number(
-          row.original.combinedPrediction || row.original.lstmPrediction
-        );
-        const current = Number(row.original.currentPrice);
+        const predicted = Number(row.original.target_price_usdt);
+        const current = Number(row.original.currentPriceAtPredicition);
         if (!predicted || !current) return "N/A";
 
         const diffPercent = ((predicted - current) / current) * 100;
