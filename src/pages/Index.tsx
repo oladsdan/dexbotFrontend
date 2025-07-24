@@ -441,7 +441,7 @@ const Index = () => {
 
         const stopLossPercentage = `${slPercent.toFixed(3)}%`;
 
-        return <span>{signal === "buy" ? stopLossPercentage : "N/A"}</span>;
+        // return <span>{signal === "buy" ? stopLossPercentage : "N/A"}</span>;
       },
     },
 
