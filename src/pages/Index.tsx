@@ -10,7 +10,12 @@ import { DateTime } from "luxon";
 import TimezoneSelector from "@/components/TimezoneSelector";
 import CurrentTimeDisplay from "@/components/CurrentTimeDisplay";
 import monitoredTokens from "@/monitodTokens.json";
+import * as XLSX from "xlsx";
 import { access } from "fs";
+import { Download } from 'lucide-react';
+
+
+
 
 export interface Signal {
   pairName: string;
@@ -629,6 +634,37 @@ const Index = () => {
     // },
   ];
 
+ const handleExportToExcel = () => {
+  const exportData = filteredSignals.map((row, index) => {
+    const targetPrice = row.currentPriceAtPredicition * 1.016;
+
+    return {
+      "S/NO": index + 1,
+      "TOKEN (NAME)": row.pairName,
+      "Prediction Time Price (USDT)": row.currentPriceAtPredicition.toFixed(8),
+      "TARGET PRICE (USDT)": targetPrice.toFixed(8),
+      "CURRENT PRICE (USDT)": parseFloat(row.currentPrice).toFixed(8),
+      "NOW DIFF (%)": row.now_diff_percent,
+      "CURRENT SIGNAL": row.signal,
+      "TARGET DIFF (%)": row.target_diff_percent,
+      "TP (%)":"",
+      "SL (%)":"",
+      "Predicted At":parseCustomDateString(row.predictedTime),
+      "Expires At" : parseCustomDateString(row.expiryTime),
+      "HIT STATUS": row.hit_status,
+      "HIT TIME": row.hit_time,
+    };
+  });
+
+  const worksheet = XLSX.utils.json_to_sheet(exportData);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Signals");
+
+  XLSX.writeFile(workbook, "signals_data.xlsx");
+};
+
+
+
   return (
     <div className="min-h-screen bg-slate-800 text-white">
       {/* Header Navigation */}
@@ -702,6 +738,15 @@ const Index = () => {
             onTimezoneChange={setTimezone}
             initialTimezone={timezone}
           />
+
+             <div className="flex justify-end mb-4">
+                <Button
+                  onClick={handleExportToExcel}
+                  className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
+                >
+                  <Download />
+                </Button>
+              </div>
         </div>
 
         {/* Signal Statistics */}
