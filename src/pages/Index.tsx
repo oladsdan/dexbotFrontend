@@ -461,6 +461,70 @@ const Index = () => {
         return <span>{signal === "buy" ? stopLossPercentage : "N/A"}</span>;
       },
     },
+     {
+      accessorKey: "TrailingTakeProfit",
+      header: "TTP(%)",
+
+      accessorFn: (row) => {
+        // const targetDiff = parseFloat(row.target_diff_percent);
+
+        //  const slPercent = targetDiff * 0.75;
+
+        // const stopLossPercentage = `${slPercent.toFixed(3)}%`;
+        let TrailingTakeProfit = row.original.TTP;
+
+         TrailingTakeProfit = `${TrailingTakeProfit.toFixed(3)}%`;
+
+        if (row.signal === "Buy") {
+          return TrailingTakeProfit;
+        }
+      },
+
+      cell: ({ row }) => {
+        const signal = row.original.signal.toLowerCase();
+        // const targetDiff = parseFloat(row.original.target_diff_percent);
+
+        let TrailingTakeProfit = row.original.TTP;
+
+         TrailingTakeProfit = `${TrailingTakeProfit.toFixed(3)}%`;
+
+        return <span>{signal === "buy" ? TrailingTakeProfit : "N/A"}</span>;
+      },
+    },
+
+     {
+      accessorKey: "TrailingStopLoss",
+      header: "TSL(%)",
+
+      accessorFn: (row) => {
+        // const targetDiff = parseFloat(row.target_diff_percent);
+
+        //  const slPercent = targetDiff * 0.75;
+
+        // const stopLossPercentage = `${slPercent.toFixed(3)}%`;
+        let TrailingStopLoss = row.original.TSL;
+
+         TrailingStopLoss = `${TrailingStopLoss.toFixed(3)}%`;
+
+        if (row.signal === "Buy") {
+          return TrailingStopLoss;
+        }
+      },
+
+      cell: ({ row }) => {
+        const signal = row.original.signal.toLowerCase();
+        // const targetDiff = parseFloat(row.original.target_diff_percent);
+
+        let TrailingStopLoss = row.original.TSL;
+
+         TrailingStopLoss = `${TrailingStopLoss.toFixed(3)}%`;
+
+        return <span>{signal === "buy" ? TrailingStopLoss : "N/A"}</span>;
+      },
+    },
+
+
+
     {
       accessorKey: "RiskRewardRatio",
       header: "RRR",
@@ -488,98 +552,6 @@ const Index = () => {
         return <span>{signal === "buy" ? RRR : "N/A"}</span>;
       },
     },
-
-    // {
-    //   accessorKey: "aiPrediction",
-    //   header: "Prediction (USDT)",
-    //   accessorFn: (row) =>
-    //     Number(row.combinedPrediction || row.lstmPrediction || 0),
-    //   // cell: ({ row }) =>
-    //   //   row.original.combinedPrediction || row.original.lstmPrediction || "N/A", // Modified line,
-    //   cell: ({ row }) => {
-    //     const aiPrice = Number(
-    //       row.original.combinedPrediction || row.original.lstmPrediction
-    //     );
-
-    //     const actualPrice = Number(row.original.currentPrice);
-
-    //     // const percentageChange = ((aiPrice - actualPrice) / actualPrice) * 100;
-    //     const priceChange = aiPrice - actualPrice;
-    //     let colorClass = "text-white";
-
-    //     if (priceChange > 0) colorClass = "text-green-400";
-    //     else if (priceChange < 0) colorClass = "text-red-400";
-
-    //     return (
-    //       <div className="flex items-center justify-end">
-    //         <span className={`font-medium uppercase ${colorClass}`}>
-    //           {aiPrice ? aiPrice : "N/A"}
-    //         </span>
-    //       </div>
-    //     );
-    //   },
-    // },
-    // {
-    //   accessorKey: "currentPriceAtPredicition",
-    //   header: "Prediction Time Price (USDT)",
-    //   cell: ({ row }) => row.original.currentPriceAtPredicition.toFixed(8),
-    // },
-    
-   
-    // {
-    //   accessorKey: "now_diff_percent",
-    //   header: "NOW DIFF(%)",
-    //   cell: ({ row }) => {
-    //     const priceDifference = row.original.now_diff_percent;
-
-    //     let colorClass = "text-white";
-
-    //     if (priceDifference.includes("-")) {
-    //       colorClass = "text-red-400";
-    //     } else {
-    //       colorClass = "text-green-400";
-    //     }
-
-    //     return (
-    //       <div className="flex items-center justify-end">
-    //         <span className={`font-medium uppercase ${colorClass}`}>
-    //           {priceDifference ? priceDifference : "N/A"}
-    //         </span>
-    //       </div>
-    //     );
-    //   },
-    // },
-    // {
-    //   accessorKey: "priceDifference",
-    //   header: "Price Difference (%)",
-    //   accessorFn: (row) => {
-    //     const predicted = Number(row.target_price_usdt);
-    //     const current = Number(row.currentPriceAtPredicition);
-    //     if (!predicted || !current) return null;
-    //     return ((predicted - current) / current) * 100;
-    //   },
-    //   cell: ({ row }) => {
-    //     const predicted = Number(row.original.target_price_usdt);
-    //     const current = Number(row.original.currentPriceAtPredicition);
-    //     if (!predicted || !current) return "N/A";
-
-    //     const diffPercent = ((predicted - current) / current) * 100;
-    //     const colorClass =
-    //       diffPercent > 0
-    //         ? "text-green-400"
-    //         : diffPercent < 0
-    //         ? "text-red-400"
-    //         : "text-white";
-
-    //     return (
-    //       <div className="flex items-center justify-end">
-    //         <span className={`font-medium ${colorClass}`}>
-    //           {diffPercent.toFixed(2)}%
-    //         </span>
-    //       </div>
-    //     );
-    //   },
-    // },
     {
       accessorKey: "predictedTime",
       header: "Predicted At",
@@ -589,14 +561,6 @@ const Index = () => {
           zone: "UTC+1",
         }).toMillis(); // sorting uses this timestamp
       },
-      /*************  ✨ Windsurf Command ⭐  *************/
-      /**
-       * Cell renderer function for displaying the predicted time.
-       * Parses the predicted time from the row's original data using the custom date parser.
-       * If the predicted time is not available or invalid, it returns "N/A".
-       */
-
-      /*******  bf0ddb0b-3c93-4565-9e22-75c77c421cf6  *******/
       cell: ({ row }) =>
         parseCustomDateString(row.original.predictedTime) || "N/A",
     },
@@ -700,7 +664,9 @@ const Index = () => {
   const workbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbook, worksheet, "Signals");
 
-  XLSX.writeFile(workbook, "signals_data.xlsx");
+  const date = new Date();
+
+  XLSX.writeFile(workbook, "pancake_price_predictions.xlsx");
 };
 
 
