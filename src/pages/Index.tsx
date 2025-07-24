@@ -393,17 +393,16 @@ const Index = () => {
 
 
     },
-
     {
       accessorKey: "takeProfitPercentage",
       header: "TP (%)",
 
       accessorFn: (row) => {
-        const targetDiff = parseFloat(row.target_diff_percent);
+         const TakeProfit = row.original.tpPercentage
 
-        const tpPercent = targetDiff * 0.85;
+        const takeProfitPercentage = `${TakeProfit.toFixed(3)}%`;
 
-        const takeProfitPercentage = `${tpPercent.toFixed(3)}%`;
+        // const takeProfitPercentage = `${tpPercent.toFixed(3)}%`;
 
         if (row.signal === "Buy") {
           return takeProfitPercentage;
@@ -412,13 +411,14 @@ const Index = () => {
 
       cell: ({ row }) => {
         const signal = row.original.signal.toLowerCase();
-        const targetDiff = parseFloat(row.original.target_diff_percent);
+        // const targetDiff = parseFloat(row.original.target_diff_percent);
 
-        const tpPercent = targetDiff * 0.85;
+        // const tpPercent = targetDiff * 0.85;
+        const TakeProfit = row.original.tpPercentage
 
-        const takeProfitPercentage = `${tpPercent.toFixed(3)}%`;
+        const takeProfitPercentage = `${TakeProfit.toFixed(3)}%`;
 
-        // return <span>{signal === "buy" ? takeProfitPercentage : "N/A"}</span>;
+        return <span>{signal === "buy" ? takeProfitPercentage : "N/A"}</span>;
       },
     },
 
@@ -427,26 +427,57 @@ const Index = () => {
       header: "SL (%)",
 
       accessorFn: (row) => {
-        const targetDiff = parseFloat(row.target_diff_percent);
+        // const targetDiff = parseFloat(row.target_diff_percent);
 
-         const slPercent = targetDiff * 0.75;
+        //  const slPercent = targetDiff * 0.75;
 
-        const stopLossPercentage = `${slPercent.toFixed(3)}%`;
+        // const stopLossPercentage = `${slPercent.toFixed(3)}%`;
+        const stopLoss = row.original.slPercentage;
 
-        // if (row.signal === "Buy") {
-        //   return stopLossPercentage;
-        // }
+        const stopLossPercentage = `${stopLoss.toFixed(3)}%`;
+
+        if (row.signal === "Buy") {
+          return stopLossPercentage;
+        }
       },
 
       cell: ({ row }) => {
         const signal = row.original.signal.toLowerCase();
-        const targetDiff = parseFloat(row.original.target_diff_percent);
+        // const targetDiff = parseFloat(row.original.target_diff_percent);
 
-        const slPercent = targetDiff * 0.75;
+        // const slPercent = targetDiff * 0.75;
+        const stopLoss = row.original.slPercentage;
 
-        const stopLossPercentage = `${slPercent.toFixed(3)}%`;
+        const stopLossPercentage = `${stopLoss.toFixed(3)}%`;
 
-        // return <span>{signal === "buy" ? stopLossPercentage : "N/A"}</span>;
+        return <span>{signal === "buy" ? stopLossPercentage : "N/A"}</span>;
+      },
+    },
+    {
+      accessorKey: "RiskRewardRatio",
+      header: "RRR",
+
+      accessorFn: (row) => {
+        const RRRsignal = row.original.riskRewardRatio;
+
+        const RRR = `${RRRsignal.toFixed(2)}%`;
+
+        if (row.signal === "Buy") {
+          return RRR;
+        }
+      },
+
+      cell: ({ row }) => {
+        const signal = row.original.signal.toLowerCase();
+        // const targetDiff = parseFloat(row.original.target_diff_percent);
+
+        // const slPercent = targetDiff * 0.75;
+        const RRRsignal = row.original.riskRewardRatio;
+
+        const RRR = `${RRRsignal.toFixed(2)}%`;
+
+
+        return <span>{signal === "buy" ? RRR : "N/A"}</span>;
       },
     },
 
@@ -647,8 +678,9 @@ const Index = () => {
       "NOW DIFF (%)": row.now_diff_percent,
       "CURRENT SIGNAL": row.signal === "Buy"? row.signal : "No Action",
       "TARGET DIFF (%)": row.target_diff_percent,
-      "TP (%)":"",
-      "SL (%)":"",
+      "TP (%)": row.tpPercentage.toFixed(3),
+      "SL (%)": row.slPercentage.toFixed(3),
+      "RRR":  row.riskRewardRatio.toFixed(2),
       "Predicted At":parseCustomDateString(row.predictedTime),
       "Expires At" : parseCustomDateString(row.expiryTime),
       "HIT STATUS": row.hit_status,
