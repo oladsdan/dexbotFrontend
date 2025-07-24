@@ -606,6 +606,10 @@ const Index = () => {
       cell: ({ row }) => {
         // parseCustomDateString(row.original.hit_time) || "Not Reached";
 
+        const hitTime = DateTime.fromFormat(row.original.hit_time, "yyyy.MM.dd HH:mm:ss", {
+          zone: "UTC+1",
+        }).toMillis();
+
         let colorClass;
         if (row.original.hit_time === "Not Reached")
           colorClass = "text-red-400";
@@ -613,7 +617,7 @@ const Index = () => {
         return (
           <div className="flex items-center justify-end">
             <span className={`font-medium ${colorClass}`}>
-              {row.original.hit_time}
+              {hitTime}
             </span>
           </div>
         );
