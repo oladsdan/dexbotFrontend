@@ -468,7 +468,7 @@ const Index = () => {
       accessorFn: (row) => {
         const RRRsignal = row.original.riskRewardRatio;
 
-        const RRR = `${RRRsignal.toFixed(2)}%`;
+        const RRR = `${RRRsignal.toFixed(2)}`;
 
         if (row.signal === "Buy") {
           return RRR;
@@ -482,7 +482,7 @@ const Index = () => {
         // const slPercent = targetDiff * 0.75;
         const RRRsignal = row.original.riskRewardRatio;
 
-        const RRR = `${RRRsignal.toFixed(2)}%`;
+        const RRR = `${RRRsignal.toFixed(2)}`;
 
 
         return <span>{signal === "buy" ? RRR : "N/A"}</span>;
