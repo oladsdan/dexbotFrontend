@@ -334,9 +334,17 @@ const Index = () => {
         const signal = row.original.signal.toLowerCase();
         return (
           <div className="flex items-center justify-end">
-            <Button className={`hover:cursor-pointer text-white uppercase`}>
-              {signal.toLowerCase() === "hold" ? "No Action" : signal}
+            {(signal.lowerCase() === "buy")?(
+              <Button className={`hover:cursor-pointer text-white uppercase`}>
+              {signal}
             </Button>
+
+            ):(
+              <span className={` text-white uppercase`}>
+              {signal.toLowerCase() === "hold" ? "No Action" : signal}
+            </span>
+            )}
+            
           </div>
         );
       },
@@ -797,11 +805,11 @@ const Index = () => {
               </span>
             </div> */}
             <div className="text-center">
-              <span className="text-yellow-400 font-medium">
+              {/* <span className="text-yellow-400 font-medium">
                 Hold:{" "}
                 {filteredSignals.filter((s) => s.signal === "Hold").length}/
                 {filteredSignals.length}
-              </span>
+              </span> */}
             </div>
             {/* <div className="text-center">
               <span className="text-orange-400 font-medium">
