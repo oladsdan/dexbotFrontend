@@ -334,7 +334,7 @@ const Index = () => {
         const signal = row.original.signal.toLowerCase();
         return (
           <div className="flex items-center justify-end">
-            {(signal.lowerCase() === "buy")?(
+            {(signal.toLowerCase() === "buy")?(
               <Button className={`hover:cursor-pointer text-white uppercase`}>
               {signal}
             </Button>
