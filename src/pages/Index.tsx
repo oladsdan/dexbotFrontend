@@ -645,7 +645,7 @@ const Index = () => {
       "TARGET PRICE (USDT)": targetPrice.toFixed(8),
       "CURRENT PRICE (USDT)": parseFloat(row.currentPrice).toFixed(8),
       "NOW DIFF (%)": row.now_diff_percent,
-      "CURRENT SIGNAL": row.signal,
+      "CURRENT SIGNAL": row.signal === "Buy"? row.signal : "No Action",
       "TARGET DIFF (%)": row.target_diff_percent,
       "TP (%)":"",
       "SL (%)":"",
