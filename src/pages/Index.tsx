@@ -334,9 +334,17 @@ const Index = () => {
         const signal = row.original.signal.toLowerCase();
         return (
           <div className="flex items-center justify-end">
-            <Button className={`hover:cursor-pointer text-white uppercase`}>
-              {signal.toLowerCase() === "hold" ? "No Action" : signal}
+            {(signal.toLowerCase() === "buy")?(
+              <Button className={`hover:cursor-pointer text-white uppercase`}>
+              {signal}
             </Button>
+
+            ):(
+              <span className={` text-white uppercase`}>
+              {signal.toLowerCase() === "hold" ? "No Action" : signal}
+            </span>
+            )}
+            
           </div>
         );
       },
@@ -460,7 +468,7 @@ const Index = () => {
       accessorFn: (row) => {
         const RRRsignal = row.original.riskRewardRatio;
 
-        const RRR = `${RRRsignal.toFixed(2)}%`;
+        const RRR = `${RRRsignal.toFixed(2)}`;
 
         if (row.signal === "Buy") {
           return RRR;
@@ -474,7 +482,7 @@ const Index = () => {
         // const slPercent = targetDiff * 0.75;
         const RRRsignal = row.original.riskRewardRatio;
 
-        const RRR = `${RRRsignal.toFixed(2)}%`;
+        const RRR = `${RRRsignal.toFixed(2)}`;
 
 
         return <span>{signal === "buy" ? RRR : "N/A"}</span>;
@@ -797,11 +805,11 @@ const Index = () => {
               </span>
             </div> */}
             <div className="text-center">
-              <span className="text-yellow-400 font-medium">
+              {/* <span className="text-yellow-400 font-medium">
                 Hold:{" "}
                 {filteredSignals.filter((s) => s.signal === "Hold").length}/
                 {filteredSignals.length}
-              </span>
+              </span> */}
             </div>
             {/* <div className="text-center">
               <span className="text-orange-400 font-medium">
