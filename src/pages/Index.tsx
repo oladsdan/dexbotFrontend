@@ -413,7 +413,7 @@ const Index = () => {
 
         const takeProfitPercentage = `${tpPercent.toFixed(3)}%`;
 
-        return <span>{signal === "buy" ? takeProfitPercentage : "N/A"}</span>;
+        // return <span>{signal === "buy" ? takeProfitPercentage : "N/A"}</span>;
       },
     },
 
@@ -428,9 +428,9 @@ const Index = () => {
 
         const stopLossPercentage = `${slPercent.toFixed(3)}%`;
 
-        if (row.signal === "Buy") {
-          return stopLossPercentage;
-        }
+        // if (row.signal === "Buy") {
+        //   return stopLossPercentage;
+        // }
       },
 
       cell: ({ row }) => {
