@@ -374,29 +374,29 @@ const Index = () => {
     },
    
 
-    {
-      accessorKey: "target_diff_percent",
-      header: "TARGET DIFF(%)",
-      cell: ({ row }) => {
-        const TargeDiff = row.original.target_diff_percent;
+    // {
+    //   accessorKey: "target_diff_percent",
+    //   header: "TARGET DIFF(%)",
+    //   cell: ({ row }) => {
+    //     const TargeDiff = row.original.target_diff_percent;
 
-        let colorClass = "text-white";
+    //     let colorClass = "text-white";
 
-        if (TargeDiff.includes("-")) {
-          colorClass = "text-red-400";
-        } else {
-          colorClass = "text-green-400";
-        }
+    //     if (TargeDiff.includes("-")) {
+    //       colorClass = "text-red-400";
+    //     } else {
+    //       colorClass = "text-green-400";
+    //     }
 
-        return (
-          <div className="flex items-center justify-end">
-            <span className={`font-medium uppercase ${colorClass}`}>
-              {TargeDiff ? TargeDiff : "N/A"}
-            </span>
-          </div>
-        );
-      },
-    },
+    //     return (
+    //       <div className="flex items-center justify-end">
+    //         <span className={`font-medium uppercase ${colorClass}`}>
+    //           {TargeDiff ? TargeDiff : "N/A"}
+    //         </span>
+    //       </div>
+    //     );
+    //   },
+    // },
     {
       accessorKey: "takeProfitPercentage",
       header: "TP (%)",
