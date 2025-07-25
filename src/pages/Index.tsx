@@ -84,7 +84,7 @@ const Index = () => {
       fetchAccuracyStats().then((data) => {
         setAccuracyStats(data);
       });
-    }, 10000);
+    }, 3000);
     return () => clearInterval(interval);
   }, []);
 
@@ -404,6 +404,8 @@ const Index = () => {
     //     )
     //   }
     // },
+
+
 
 
     {
@@ -816,18 +818,18 @@ const Index = () => {
         </div>
 
         {/* AccuracyStats */}
-        <div className="flex justify-between">
+        {/* <div className="flex justify-between">
           <div>
             <span>PastAccuracy:</span>
             {accuracyStats?.pastAccuracy}
           </div>
-          <div>
+          <div>y
             <span>CurrentAccuracy:</span>
             {accuracyStats?.currentAccuracy}
           </div>
 
 
-        </div>
+        </div> */}
 
 
         
