@@ -814,6 +814,16 @@ const Index = () => {
           <DataTable columns={columns} data={filteredSignals} />
         )}
       </main>
+
+      {/* Footer */}
+      <div className="text-center py-4">
+        <h3>Note</h3>
+        <div>
+          <span>RRR &lt; 1 =&gt; Reward {'>'} Risk (GOOD) </span>
+          <span>RRR = 1 =&gt; Reward = Risk</span>
+          <span>RRR &gt; 1 =&gt; Reward &lt; Risk (BAD) </span>
+        </div>
+      </div>
     </div>
   );
 };
