@@ -779,7 +779,7 @@ const Index = () => {
 
         {/* Signal Statistics */}
         <div className="flex justify-center items-center">
-          <div className="grid grid-cols-2 gap-4 mb-8 ">
+          <div className="grid grid-cols-1 gap-4 mb-8 ">
             <div className="text-center">
               <span className="text-green-400 font-medium">
                 Buy: {filteredSignals.filter((s) => s.signal === "Buy").length}/
@@ -816,20 +816,17 @@ const Index = () => {
         </div>
 
         {/* AccuracyStats */}
-        <div className="flex justify-between">
+        <div className="flex flex-col sm:flex-row items-center justify-between mb-6">
           <div>
-            <span>PastAccuracy:</span>
+            <span>PastAccuracy: </span>
             {accuracyStats?.pastAccuracy}
           </div>
           <div>
-            <span>CurrentAccuracy:</span>
+            <span>CurrentAccuracy: </span>
             {accuracyStats?.currentAccuracy}
           </div>
 
-
         </div>
-
-
         
 
         {/* ✅ Error Message */}
