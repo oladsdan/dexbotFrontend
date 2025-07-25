@@ -626,37 +626,37 @@ const Index = () => {
         );
       },
     },
-    {
-      accessorKey: "hit_time",
-      header: "HIT TIME",
-      accessorFn: (row) => {
-        if (row.hit_time === "Not Reached") return row.hit_time;
-        return DateTime.fromFormat(row.hit_time, "yyyy.MM.dd HH:mm:ss", {
-          zone: "UTC+1",
-        }).toMillis(); // sorting uses this timestamp
-      },
+    // {
+    //   accessorKey: "hit_time",
+    //   header: "HIT TIME",
+    //   accessorFn: (row) => {
+    //     if (row.hit_time === "Not Reached") return row.hit_time;
+    //     return DateTime.fromFormat(row.hit_time, "yyyy.MM.dd HH:mm:ss", {
+    //       zone: "UTC+1",
+    //     }).toMillis(); // sorting uses this timestamp
+    //   },
 
-      cell: ({ row }) => {
-        // parseCustomDateString(row.original.hit_time) || "Not Reached";
+    //   cell: ({ row }) => {
+    //     // parseCustomDateString(row.original.hit_time) || "Not Reached";
 
-        if (row.original.hit_time === "Not Reached") return "Not Reached";
-        const hitTime = DateTime.fromFormat(row.original.hit_time, "yyyy.MM.dd HH:mm:ss", {
-          zone: "UTC+1",
-        }).toMillis();
+    //     if (row.original.hit_time === "Not Reached") return "Not Reached";
+    //     const hitTime = DateTime.fromFormat(row.original.hit_time, "yyyy.MM.dd HH:mm:ss", {
+    //       zone: "UTC+1",
+    //     }).toMillis();
 
-        let colorClass;
-        if (row.original.hit_time === "Not Reached")
-          colorClass = "text-red-400";
-        else colorClass = "text-green-400";
-        return (
-          <div className="flex items-center justify-end">
-            <span className={`font-medium ${colorClass}`}>
-              {hitTime}
-            </span>
-          </div>
-        );
-      },
-    },
+    //     let colorClass;
+    //     if (row.original.hit_time === "Not Reached")
+    //       colorClass = "text-red-400";
+    //     else colorClass = "text-green-400";
+    //     return (
+    //       <div className="flex items-center justify-end">
+    //         <span className={`font-medium ${colorClass}`}>
+    //           {hitTime}
+    //         </span>
+    //       </div>
+    //     );
+    //   },
+    // },
   ];
 
  const handleExportToExcel = () => {
