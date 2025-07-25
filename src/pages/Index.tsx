@@ -794,23 +794,7 @@ const Index = () => {
         </div>
 
         {/* AccuracyStats */}
-<<<<<<< HEAD
-        {/* <div className="flex justify-between">
-          <div>
-            <span>PastAccuracy:</span>
-            {accuracyStats?.pastAccuracy}
-          </div>
-          <div>y
-            <span>CurrentAccuracy:</span>
-            {accuracyStats?.currentAccuracy}
-          </div>
-
-
-        </div> */}
-        <div className="flex flex-col sm:flex-row items-center sm:justify-between mb-6">
-=======
         {/* <div className="flex flex-col sm:flex-row items-center sm:justify-between mb-6">
->>>>>>> refs/remotes/origin/master
           {accuracyStats?.pastAccuracy && !accuracyStats.pastAccuracy.includes("N/A") && (
             <div>
               <span>Past Accuracy: </span>
@@ -821,12 +805,8 @@ const Index = () => {
             <span>Current Accuracy: </span>
             {accuracyStats?.currentAccuracy}
           </div>
-<<<<<<< HEAD
-        </div>
-=======
         </div> */}
 
->>>>>>> refs/remotes/origin/master
         {/* ✅ Error Message */}
         {queryError && (
           <div className="text-red-500 text-center py-4">
