@@ -794,6 +794,7 @@ const Index = () => {
         </div>
 
         {/* AccuracyStats */}
+<<<<<<< HEAD
         {/* <div className="flex justify-between">
           <div>
             <span>PastAccuracy:</span>
@@ -807,6 +808,9 @@ const Index = () => {
 
         </div> */}
         <div className="flex flex-col sm:flex-row items-center sm:justify-between mb-6">
+=======
+        {/* <div className="flex flex-col sm:flex-row items-center sm:justify-between mb-6">
+>>>>>>> refs/remotes/origin/master
           {accuracyStats?.pastAccuracy && !accuracyStats.pastAccuracy.includes("N/A") && (
             <div>
               <span>Past Accuracy: </span>
@@ -817,7 +821,12 @@ const Index = () => {
             <span>Current Accuracy: </span>
             {accuracyStats?.currentAccuracy}
           </div>
+<<<<<<< HEAD
         </div>
+=======
+        </div> */}
+
+>>>>>>> refs/remotes/origin/master
         {/* ✅ Error Message */}
         {queryError && (
           <div className="text-red-500 text-center py-4">
@@ -835,16 +844,6 @@ const Index = () => {
           <DataTable columns={columns} data={filteredSignals} />
         )}
       </main>
-
-      {/* Footer */}
-      <div className="text-center py-4">
-        <h3>Note</h3>
-        <div>
-          <span>RRR &lt; 1 =&gt; Reward {">"} Risk (GOOD) </span>
-          <span>RRR = 1 =&gt; Reward = Risk</span>
-          <span>RRR &gt; 1 =&gt; Reward &lt; Risk (BAD) </span>
-        </div>
-      </div>
     </div>
   );
 };
