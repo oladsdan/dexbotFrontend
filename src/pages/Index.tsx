@@ -78,7 +78,7 @@ const Index = () => {
       fetchAccuracyStats().then((data) => {
         setAccuracyStats(data);
       });
-    }, 10000);
+    }, 3000);
     return () => clearInterval(interval);
   }, []);
 
@@ -395,6 +395,12 @@ const Index = () => {
     //   }
     // },
 
+<<<<<<< HEAD
+
+
+
+=======
+>>>>>>> 2aa0e7b042acb6de6f4e322a584737f7586956e6
     {
       accessorKey: "target_diff_percent",
       header: "TARGET DIFF(%)",
@@ -794,6 +800,20 @@ const Index = () => {
         </div>
 
         {/* AccuracyStats */}
+<<<<<<< HEAD
+        {/* <div className="flex justify-between">
+          <div>
+            <span>PastAccuracy:</span>
+            {accuracyStats?.pastAccuracy}
+          </div>
+          <div>y
+            <span>CurrentAccuracy:</span>
+            {accuracyStats?.currentAccuracy}
+          </div>
+
+
+        </div> */}
+=======
         <div className="flex flex-col sm:flex-row items-center sm:justify-between mb-6">
           {accuracyStats?.pastAccuracy && !accuracyStats.pastAccuracy.includes("N/A") && (
             <div>
@@ -806,6 +826,7 @@ const Index = () => {
             {accuracyStats?.currentAccuracy}
           </div>
         </div>
+>>>>>>> 2aa0e7b042acb6de6f4e322a584737f7586956e6
 
         {/* ✅ Error Message */}
         {queryError && (
