@@ -420,7 +420,7 @@ const Index = () => {
         // const tpPercent = targetDiff * 0.85;
         const TakeProfit = row.original.tpPercentage;
 
-        const takeProfitPercentage = `${TakeProfit.toFixed(3)}%`;
+        const takeProfitPercentage = `${TakeProfit.toFixed(2)}%`;
 
         return <span>{signal === "buy" ? takeProfitPercentage : "N/A"}</span>;
       },
@@ -619,21 +619,21 @@ const Index = () => {
 
   const handleExportToExcel = () => {
     const exportData = filteredSignals.map((row, index) => {
-      const targetPrice = row.currentPriceAtPredicition * 1.016;
+      // const targetPrice = row.currentPriceAtPredicition * 1.016;
 
       return {
         "S/NO": index + 1,
         "TOKEN (NAME)": row.pairName,
         "Prediction Time Price (USDT)":
           row.currentPriceAtPredicition.toFixed(8),
-        "TARGET PRICE (USDT)": targetPrice.toFixed(8),
+        "TARGET PRICE (USDT)": row.targetPrice.toFixed(8),
         "CURRENT PRICE (USDT)": parseFloat(row.currentPrice).toFixed(8),
         "NOW DIFF (%)": row.now_diff_percent,
         "CURRENT SIGNAL": row.signal === "Buy" ? row.signal : "No Action",
         "TARGET DIFF (%)": row.target_diff_percent,
         "TP (%)": row.tpPercentage.toFixed(3),
-        "SL (%)": row.slPercentage.toFixed(3),
-        RRR: row.riskRewardRatio.toFixed(2),
+        // "SL (%)": row.slPercentage.toFixed(3),
+        // RRR: row.riskRewardRatio.toFixed(2),
         "Predicted At": parseCustomDateString(row.predictedTime),
         "Expires At": parseCustomDateString(row.expiryTime),
         "HIT STATUS": row.hit_status,
