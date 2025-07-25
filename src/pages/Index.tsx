@@ -478,94 +478,94 @@ const Index = () => {
         return <span>{signal === "buy" ? stopLossPercentage : "N/A"}</span>;
       },
     },
-    {
-      accessorKey: "TrailingTakeProfit",
-      header: "TTP(%)",
+    // {
+    //   accessorKey: "TrailingTakeProfit",
+    //   header: "TTP(%)",
 
-      accessorFn: (row) => {
-        // const targetDiff = parseFloat(row.target_diff_percent);
+    //   accessorFn: (row) => {
+    //     // const targetDiff = parseFloat(row.target_diff_percent);
 
-        //  const slPercent = targetDiff * 0.75;
+    //     //  const slPercent = targetDiff * 0.75;
 
-        // const stopLossPercentage = `${slPercent.toFixed(3)}%`;
-        let TrailingTakeProfit = row.original.TTP;
+    //     // const stopLossPercentage = `${slPercent.toFixed(3)}%`;
+    //     let TrailingTakeProfit = row.original.TTP;
 
-        TrailingTakeProfit = `${TrailingTakeProfit.toFixed(3)}%`;
+    //     TrailingTakeProfit = `${TrailingTakeProfit.toFixed(3)}%`;
 
-        if (row.signal === "Buy") {
-          return TrailingTakeProfit;
-        }
-      },
+    //     if (row.signal === "Buy") {
+    //       return TrailingTakeProfit;
+    //     }
+    //   },
 
-      cell: ({ row }) => {
-        const signal = row.original.signal.toLowerCase();
-        // const targetDiff = parseFloat(row.original.target_diff_percent);
+    //   cell: ({ row }) => {
+    //     const signal = row.original.signal.toLowerCase();
+    //     // const targetDiff = parseFloat(row.original.target_diff_percent);
 
-        let TrailingTakeProfit = row.original.TTP;
+    //     let TrailingTakeProfit = row.original.TTP;
 
-        TrailingTakeProfit = `${TrailingTakeProfit.toFixed(3)}%`;
+    //     TrailingTakeProfit = `${TrailingTakeProfit.toFixed(3)}%`;
 
-        return <span>{signal === "buy" ? TrailingTakeProfit : "N/A"}</span>;
-      },
-    },
+    //     return <span>{signal === "buy" ? TrailingTakeProfit : "N/A"}</span>;
+    //   },
+    // },
 
-    {
-      accessorKey: "TrailingStopLoss",
-      header: "TSL(%)",
+    // {
+    //   accessorKey: "TrailingStopLoss",
+    //   header: "TSL(%)",
 
-      accessorFn: (row) => {
-        // const targetDiff = parseFloat(row.target_diff_percent);
+    //   accessorFn: (row) => {
+    //     // const targetDiff = parseFloat(row.target_diff_percent);
 
-        //  const slPercent = targetDiff * 0.75;
+    //     //  const slPercent = targetDiff * 0.75;
 
-        // const stopLossPercentage = `${slPercent.toFixed(3)}%`;
-        let TrailingStopLoss = row.original.TSL;
+    //     // const stopLossPercentage = `${slPercent.toFixed(3)}%`;
+    //     let TrailingStopLoss = row.original.TSL;
 
-        TrailingStopLoss = `${TrailingStopLoss.toFixed(3)}%`;
+    //     TrailingStopLoss = `${TrailingStopLoss.toFixed(3)}%`;
 
-        if (row.signal === "Buy") {
-          return TrailingStopLoss;
-        }
-      },
+    //     if (row.signal === "Buy") {
+    //       return TrailingStopLoss;
+    //     }
+    //   },
 
-      cell: ({ row }) => {
-        const signal = row.original.signal.toLowerCase();
-        // const targetDiff = parseFloat(row.original.target_diff_percent);
+    //   cell: ({ row }) => {
+    //     const signal = row.original.signal.toLowerCase();
+    //     // const targetDiff = parseFloat(row.original.target_diff_percent);
 
-        let TrailingStopLoss = row.original.TSL;
+    //     let TrailingStopLoss = row.original.TSL;
 
-        TrailingStopLoss = `${TrailingStopLoss.toFixed(3)}%`;
+    //     TrailingStopLoss = `${TrailingStopLoss.toFixed(3)}%`;
 
-        return <span>{signal === "buy" ? TrailingStopLoss : "N/A"}</span>;
-      },
-    },
+    //     return <span>{signal === "buy" ? TrailingStopLoss : "N/A"}</span>;
+    //   },
+    // },
 
-    {
-      accessorKey: "RiskRewardRatio",
-      header: "RRR",
+    // {
+    //   accessorKey: "RiskRewardRatio",
+    //   header: "RRR",
 
-      accessorFn: (row) => {
-        const RRRsignal = row.original.riskRewardRatio;
+    //   accessorFn: (row) => {
+    //     const RRRsignal = row.original.riskRewardRatio;
 
-        const RRR = `${RRRsignal.toFixed(2)}`;
+    //     const RRR = `${RRRsignal.toFixed(2)}`;
 
-        if (row.signal === "Buy") {
-          return RRR;
-        }
-      },
+    //     if (row.signal === "Buy") {
+    //       return RRR;
+    //     }
+    //   },
 
-      cell: ({ row }) => {
-        const signal = row.original.signal.toLowerCase();
-        // const targetDiff = parseFloat(row.original.target_diff_percent);
+    //   cell: ({ row }) => {
+    //     const signal = row.original.signal.toLowerCase();
+    //     // const targetDiff = parseFloat(row.original.target_diff_percent);
 
-        // const slPercent = targetDiff * 0.75;
-        const RRRsignal = row.original.riskRewardRatio;
+    //     // const slPercent = targetDiff * 0.75;
+    //     const RRRsignal = row.original.riskRewardRatio;
 
-        const RRR = `${RRRsignal.toFixed(2)}`;
+    //     const RRR = `${RRRsignal.toFixed(2)}`;
 
-        return <span>{signal === "buy" ? RRR : "N/A"}</span>;
-      },
-    },
+    //     return <span>{signal === "buy" ? RRR : "N/A"}</span>;
+    //   },
+    // },
     {
       accessorKey: "predictedTime",
       header: "Predicted At",
@@ -607,37 +607,35 @@ const Index = () => {
         );
       },
     },
-    // {
-    //   accessorKey: "hit_time",
-    //   header: "HIT TIME",
-    //   accessorFn: (row) => {
-    //     if (row.hit_time === "Not Reached") return row.hit_time;
-    //     return DateTime.fromFormat(row.hit_time, "yyyy.MM.dd HH:mm:ss", {
-    //       zone: "UTC+1",
-    //     }).toMillis(); // sorting uses this timestamp
-    //   },
+    {
+      accessorKey: "hit_time",
+      header: "HIT TIME",
+      accessorFn: (row) => {
+        if (row.hit_time === "Not Reached" || !row.hit_time)
+          return "Not Reached";
+        return DateTime.fromFormat(row.hit_time, "yyyy.MM.dd HH:mm:ss", {
+          zone: "UTC+1",
+        }).toMillis(); // sorting uses this timestamp
+      },
 
-    //   cell: ({ row }) => {
-    //     // parseCustomDateString(row.original.hit_time) || "Not Reached";
+      cell: ({ row }) => {
+        // parseCustomDateString(row.original.hit_time) || "Not Reached";
 
-    //     if (row.original.hit_time === "Not Reached") return "Not Reached";
-    //     const hitTime = DateTime.fromFormat(row.original.hit_time, "yyyy.MM.dd HH:mm:ss", {
-    //       zone: "UTC+1",
-    //     }).toMillis();
+        if (row.original.hit_time === "Not Reached" || !row.original.hit_time)
+          return "Not Reached";
+        const hitTime = parseCustomDateString(row.original.hit_time);
 
-    //     let colorClass;
-    //     if (row.original.hit_time === "Not Reached")
-    //       colorClass = "text-red-400";
-    //     else colorClass = "text-green-400";
-    //     return (
-    //       <div className="flex items-center justify-end">
-    //         <span className={`font-medium ${colorClass}`}>
-    //           {hitTime}
-    //         </span>
-    //       </div>
-    //     );
-    //   },
-    // },
+        let colorClass;
+        if (row.original.hit_time === "Not Reached")
+          colorClass = "text-red-400";
+        else colorClass = "text-green-400";
+        return (
+          <div className="flex items-center justify-end">
+            <span className={`font-medium ${colorClass}`}>{hitTime}</span>
+          </div>
+        );
+      },
+    },
   ];
 
   const handleExportToExcel = () => {
