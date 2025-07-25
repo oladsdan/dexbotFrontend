@@ -795,7 +795,7 @@ const Index = () => {
 
         {/* AccuracyStats */}
         <div className="flex flex-col sm:flex-row items-center sm:justify-between mb-6">
-          {accuracyStats?.pastAccuracy && (
+          {accuracyStats?.pastAccuracy && !accuracyStats.pastAccuracy.includes("N/A") && (
             <div>
               <span>Past Accuracy: </span>
               {accuracyStats?.pastAccuracy}
