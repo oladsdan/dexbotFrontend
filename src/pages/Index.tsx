@@ -47,6 +47,9 @@ const Index = () => {
   const [country, setCountry] = useState("");
   const [timezone, setTimezone] = useState("");
   const [selectedTimezone, setSelectedTimezone] = useState("UTC");
+  const [accuracyStats, setAccuracyStats] = useState<{ pastAccuracy?: string, currentAccuracy?: string}>(
+    {}
+  );
 
   const tokenMap = useMemo(() => {
     const map = new Map();
@@ -59,14 +62,44 @@ const Index = () => {
   // const API_URL = "https://pancakeswapsignal.onrender.com/api/signals"; // Your backend API
   // const API_URL = "https://projectmlpancakeswap.onrender.com/api/signals"; // Your backend API
   const API_URL = "https://bot.securearbitrage.com/api/signals"; // Your backend API
-  // const API_URL = "http://188.165.71.103:3000/api/signals"; // Your backend API
-  // const API_URL = "/api/signals"; // Your backend API
-  // const API_URL = "https://pancake-signalsugragph.onrender.com/api/signals"; // Your backend API
+  const MetricEndpoint = "https://bot.securearbitrage.com/api/accuracy-stats"
+  
+
 
   const fetchSignals = async () => {
     const { data } = await axios.get(API_URL);
     return data;
   };
+
+
+
+  const fetchAccuracyStats = async () => {
+    const { data } = await axios.get(MetricEndpoint);
+    return data;
+  };
+
+  //we call the fetchAccuracyStats every 10seconds and store in accuracyStats
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchAccuracyStats().then((data) => {
+        setAccuracyStats(data);
+      });
+    }, 10000);
+    return () => clearInterval(interval);
+  }, []);
+
+
+
+
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     fetchAccuracyStats();
+
+  //   }, 10000);
+  //   return () => clearInterval(interval);
+  // }, []);
+
+
   const {
     data: signals = [],
     isLoading,
@@ -593,51 +626,36 @@ const Index = () => {
         );
       },
     },
-    {
-      accessorKey: "hit_time",
-      header: "HIT TIME",
-      accessorFn: (row) => {
-        if (row.hit_time === "Not Reached") return row.hit_time;
-        return DateTime.fromFormat(row.hit_time, "yyyy.MM.dd HH:mm:ss", {
-          zone: "UTC+1",
-        }).toMillis(); // sorting uses this timestamp
-      },
-
-      cell: ({ row }) => {
-        // parseCustomDateString(row.original.hit_time) || "Not Reached";
-
-        const hitTime = DateTime.fromFormat(row.original.hit_time, "yyyy.MM.dd HH:mm:ss", {
-          zone: "UTC+1",
-        }).toMillis();
-
-        let colorClass;
-        if (row.original.hit_time === "Not Reached")
-          colorClass = "text-red-400";
-        else colorClass = "text-green-400";
-        return (
-          <div className="flex items-center justify-end">
-            <span className={`font-medium ${colorClass}`}>
-              {hitTime}
-            </span>
-          </div>
-        );
-      },
-    },
-
     // {
-    //   accessorKey: "AI-XGBOOST",
-    //   header: "XGBoost Prediction",
-    //   cell: ({ row }) => row.original.xgboostPrediction || "N/A",
-    // },
-    // {
-    //   accessorKey: "targetPrice",
-    //   header: "Signal Update (Time and Price)",
-    //   cell: ({row}) =>  row.original.signalUpdate ? `${row.original.signalUpdate.time} - ${row.original.signalUpdate.price}` : "N/A",
-    // },
-    // {
-    //   accessorKey: "time",
-    //   header: "Time Taken for 1.2%",
-    //   cell: ({row}) => row.original.timeTakenFor1_6_percent || "N/A",
+    //   accessorKey: "hit_time",
+    //   header: "HIT TIME",
+    //   accessorFn: (row) => {
+    //     if (row.hit_time === "Not Reached") return row.hit_time;
+    //     return DateTime.fromFormat(row.hit_time, "yyyy.MM.dd HH:mm:ss", {
+    //       zone: "UTC+1",
+    //     }).toMillis(); // sorting uses this timestamp
+    //   },
+
+    //   cell: ({ row }) => {
+    //     // parseCustomDateString(row.original.hit_time) || "Not Reached";
+
+    //     if (row.original.hit_time === "Not Reached") return "Not Reached";
+    //     const hitTime = DateTime.fromFormat(row.original.hit_time, "yyyy.MM.dd HH:mm:ss", {
+    //       zone: "UTC+1",
+    //     }).toMillis();
+
+    //     let colorClass;
+    //     if (row.original.hit_time === "Not Reached")
+    //       colorClass = "text-red-400";
+    //     else colorClass = "text-green-400";
+    //     return (
+    //       <div className="flex items-center justify-end">
+    //         <span className={`font-medium ${colorClass}`}>
+    //           {hitTime}
+    //         </span>
+    //       </div>
+    //     );
+    //   },
     // },
   ];
 
@@ -774,13 +792,13 @@ const Index = () => {
                 {filteredSignals.length}
               </span>
             </div> */}
-            <div className="text-center">
-              {/* <span className="text-yellow-400 font-medium">
+            {/* <div className="text-center">
+              <span className="text-yellow-400 font-medium">
                 Hold:{" "}
                 {filteredSignals.filter((s) => s.signal === "Hold").length}/
                 {filteredSignals.length}
-              </span> */}
-            </div>
+              </span>
+            </div> */}
             {/* <div className="text-center">
               <span className="text-orange-400 font-medium">
                 Exit: {filteredSignals.filter((s) => s.signal === "Exit").length}/
@@ -796,6 +814,23 @@ const Index = () => {
             <div className="bg-gradient-to-r from-green-400 w-full via-yellow-400 to-red-400 h-2 rounded-full"></div>
           </div>
         </div>
+
+        {/* AccuracyStats */}
+        <div className="flex justify-between">
+          <div>
+            <span>PastAccuracy:</span>
+            {accuracyStats?.pastAccuracy}
+          </div>
+          <div>
+            <span>CurrentAccuracy:</span>
+            {accuracyStats?.currentAccuracy}
+          </div>
+
+
+        </div>
+
+
+        
 
         {/* ✅ Error Message */}
         {queryError && (
@@ -814,6 +849,16 @@ const Index = () => {
           <DataTable columns={columns} data={filteredSignals} />
         )}
       </main>
+
+      {/* Footer */}
+      <div className="text-center py-4">
+        <h3>Note</h3>
+        <div>
+          <span>RRR &lt; 1 =&gt; Reward {'>'} Risk (GOOD) </span>
+          <span>RRR = 1 =&gt; Reward = Risk</span>
+          <span>RRR &gt; 1 =&gt; Reward &lt; Risk (BAD) </span>
+        </div>
+      </div>
     </div>
   );
 };
