@@ -672,39 +672,37 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-800 text-white">
+    <div className="min-h-screen secure-body-background text-white">
       {/* Header Navigation */}
-      <header className="bg-teal-600 px-4 py-3">
+      <header className="bg-[#212529] px-4 py-3">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-8">
-            <div className="bg-black p-2 rounded">
+            <div className="p-2 rounded">
               <img
-                src="/logo.png"
+                src="/logo.jpg"
                 alt="Logo"
-                className="h-8 w-8 object-cover"
+                className="h-12 w-12 object-cover rounded-lg"
               />
             </div>
-            <nav className="hidden md:flex space-x-6">
-              <a href="#" className="text-white hover:text-teal-200">
-                Benefits
-              </a>
-              <a href="#" className="text-white hover:text-teal-200">
-                Testimonials
-              </a>
-              <a href="#" className="text-white hover:text-teal-200">
-                Performance
-              </a>
-              <a href="#" className="text-white hover:text-teal-200">
-                FAQ
-              </a>
-              <a href="#" className="text-green-400 hover:text-green-300">
-                Pancake.finance ↓
-              </a>
-            </nav>
+            <h1 className="font-bold">SECURE ARBITRAGE</h1>
           </div>
-          <Button className="bg-green-400 hover:bg-green-500 text-black font-medium px-6">
-            Start now →
-          </Button>
+          <a href="https://securearbitrage.com/sign-in">
+            <Button
+              style={{
+                background: "linear-gradient(45deg, #5B86E5, #36D1DC)", // Stylish gradient for the button
+                color: "#FFFFFF",
+                padding: "8px",
+                fontSize: "16px",
+                border: "none",
+                borderRadius: "8px",
+                cursor: "pointer",
+                transition: "0.3s ease",
+                boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.3)",
+              }}
+            >
+              Sign In
+            </Button>
+          </a>
         </div>
       </header>
 
@@ -712,7 +710,7 @@ const Index = () => {
       <main className="max-w-7xl mx-auto px-4 py-8">
         {/* Title Section */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-green-400 mb-4 text-center">
+          <h1 className="text-3xl font-bold mb-4 text-center">
             Signals - <span className="block sm:inline">Pancake.finance</span>
           </h1>
           <div className="text-center text-gray-400 mb-6">

@@ -103,3 +103,11 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+
+.secure-body-background {
+    background: linear-gradient(45deg, #3360A2, #2E292D, #2A252D, #414E55);
+    text-align: left;
+    color: white;
+    min-height: 100vh;
+}
