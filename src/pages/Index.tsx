@@ -13,6 +13,7 @@ import monitoredTokens from "@/monitodTokens.json";
 import * as XLSX from "xlsx";
 import { access } from "fs";
 import { Download } from "lucide-react";
+import Footer from "@/components/Footer";
 
 export interface Signal {
   pairName: string;
@@ -822,6 +823,8 @@ const Index = () => {
           <DataTable columns={columns} data={filteredSignals} />
         )}
       </main>
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };
