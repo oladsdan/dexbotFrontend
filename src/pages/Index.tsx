@@ -12,10 +12,7 @@ import CurrentTimeDisplay from "@/components/CurrentTimeDisplay";
 import monitoredTokens from "@/monitodTokens.json";
 import * as XLSX from "xlsx";
 import { access } from "fs";
-import { Download } from 'lucide-react';
-
-
-
+import { Download } from "lucide-react";
 
 export interface Signal {
   pairName: string;
@@ -47,9 +44,10 @@ const Index = () => {
   const [country, setCountry] = useState("");
   const [timezone, setTimezone] = useState("");
   const [selectedTimezone, setSelectedTimezone] = useState("UTC");
-  const [accuracyStats, setAccuracyStats] = useState<{ pastAccuracy?: string, currentAccuracy?: string}>(
-    {}
-  );
+  const [accuracyStats, setAccuracyStats] = useState<{
+    pastAccuracy?: string;
+    currentAccuracy?: string;
+  }>({});
 
   const tokenMap = useMemo(() => {
     const map = new Map();
@@ -62,16 +60,12 @@ const Index = () => {
   // const API_URL = "https://pancakeswapsignal.onrender.com/api/signals"; // Your backend API
   // const API_URL = "https://projectmlpancakeswap.onrender.com/api/signals"; // Your backend API
   const API_URL = "https://bot.securearbitrage.com/api/signals"; // Your backend API
-  const MetricEndpoint = "https://bot.securearbitrage.com/api/accuracy-stats"
-  
-
+  const MetricEndpoint = "https://bot.securearbitrage.com/api/accuracy-stats";
 
   const fetchSignals = async () => {
     const { data } = await axios.get(API_URL);
     return data;
   };
-
-
 
   const fetchAccuracyStats = async () => {
     const { data } = await axios.get(MetricEndpoint);
@@ -88,9 +82,6 @@ const Index = () => {
     return () => clearInterval(interval);
   }, []);
 
-
-
-
   // useEffect(() => {
   //   const interval = setInterval(() => {
   //     fetchAccuracyStats();
@@ -98,7 +89,6 @@ const Index = () => {
   //   }, 10000);
   //   return () => clearInterval(interval);
   // }, []);
-
 
   const {
     data: signals = [],
@@ -304,16 +294,18 @@ const Index = () => {
       accessorKey: "target_price_usdt",
       header: "TARGET PRICE (USDT)",
       cell: ({ row }) => {
-        const PredictedTimePrice = Number(row.original.currentPriceAtPredicition)
-        const TargetPrice = (PredictedTimePrice * 1.016).toFixed(8)
+        const PredictedTimePrice = Number(
+          row.original.currentPriceAtPredicition
+        );
+        const TargetPrice = (PredictedTimePrice * 1.016).toFixed(8);
         return (
           <div className="">
-            <span className= " text-white">
+            <span className=" text-white">
               {TargetPrice ? TargetPrice : "N/A"}
             </span>
           </div>
-        )
-      }
+        );
+      },
     },
     // {
     //   accessorKey: "target_price_usdt",
@@ -367,17 +359,15 @@ const Index = () => {
         const signal = row.original.signal.toLowerCase();
         return (
           <div className="flex items-center justify-end">
-            {(signal.toLowerCase() === "buy")?(
+            {signal.toLowerCase() === "buy" ? (
               <Button className={`hover:cursor-pointer text-white uppercase`}>
-              {signal}
-            </Button>
-
-            ):(
+                {signal}
+              </Button>
+            ) : (
               <span className={` text-white uppercase`}>
-              {signal.toLowerCase() === "hold" ? "No Action" : signal}
-            </span>
+                {signal.toLowerCase() === "hold" ? "No Action" : signal}
+              </span>
             )}
-            
           </div>
         );
       },
@@ -405,14 +395,17 @@ const Index = () => {
     //   }
     // },
 
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> 2aa0e7b042acb6de6f4e322a584737f7586956e6
     {
       accessorKey: "target_diff_percent",
       header: "TARGET DIFF(%)",
       cell: ({ row }) => {
-        const TargeDiff = row.original.target_diff_percent
+        const TargeDiff = row.original.target_diff_percent;
 
         let colorClass = "text-white";
 
@@ -429,19 +422,14 @@ const Index = () => {
             </span>
           </div>
         );
-
-
-      }
-
-
-
+      },
     },
     {
       accessorKey: "takeProfitPercentage",
       header: "TP (%)",
 
       accessorFn: (row) => {
-         const TakeProfit = row.original.tpPercentage
+        const TakeProfit = row.original.tpPercentage;
 
         const takeProfitPercentage = `${TakeProfit.toFixed(3)}%`;
 
@@ -457,7 +445,7 @@ const Index = () => {
         // const targetDiff = parseFloat(row.original.target_diff_percent);
 
         // const tpPercent = targetDiff * 0.85;
-        const TakeProfit = row.original.tpPercentage
+        const TakeProfit = row.original.tpPercentage;
 
         const takeProfitPercentage = `${TakeProfit.toFixed(3)}%`;
 
@@ -496,97 +484,94 @@ const Index = () => {
         return <span>{signal === "buy" ? stopLossPercentage : "N/A"}</span>;
       },
     },
-     {
-      accessorKey: "TrailingTakeProfit",
-      header: "TTP(%)",
+    // {
+    //   accessorKey: "TrailingTakeProfit",
+    //   header: "TTP(%)",
 
-      accessorFn: (row) => {
-        // const targetDiff = parseFloat(row.target_diff_percent);
+    //   accessorFn: (row) => {
+    //     // const targetDiff = parseFloat(row.target_diff_percent);
 
-        //  const slPercent = targetDiff * 0.75;
+    //     //  const slPercent = targetDiff * 0.75;
 
-        // const stopLossPercentage = `${slPercent.toFixed(3)}%`;
-        let TrailingTakeProfit = row.original.TTP;
+    //     // const stopLossPercentage = `${slPercent.toFixed(3)}%`;
+    //     let TrailingTakeProfit = row.original.TTP;
 
-         TrailingTakeProfit = `${TrailingTakeProfit.toFixed(3)}%`;
+    //     TrailingTakeProfit = `${TrailingTakeProfit.toFixed(3)}%`;
 
-        if (row.signal === "Buy") {
-          return TrailingTakeProfit;
-        }
-      },
+    //     if (row.signal === "Buy") {
+    //       return TrailingTakeProfit;
+    //     }
+    //   },
 
-      cell: ({ row }) => {
-        const signal = row.original.signal.toLowerCase();
-        // const targetDiff = parseFloat(row.original.target_diff_percent);
+    //   cell: ({ row }) => {
+    //     const signal = row.original.signal.toLowerCase();
+    //     // const targetDiff = parseFloat(row.original.target_diff_percent);
 
-        let TrailingTakeProfit = row.original.TTP;
+    //     let TrailingTakeProfit = row.original.TTP;
 
-         TrailingTakeProfit = `${TrailingTakeProfit.toFixed(3)}%`;
+    //     TrailingTakeProfit = `${TrailingTakeProfit.toFixed(3)}%`;
 
-        return <span>{signal === "buy" ? TrailingTakeProfit : "N/A"}</span>;
-      },
-    },
+    //     return <span>{signal === "buy" ? TrailingTakeProfit : "N/A"}</span>;
+    //   },
+    // },
 
-     {
-      accessorKey: "TrailingStopLoss",
-      header: "TSL(%)",
+    // {
+    //   accessorKey: "TrailingStopLoss",
+    //   header: "TSL(%)",
 
-      accessorFn: (row) => {
-        // const targetDiff = parseFloat(row.target_diff_percent);
+    //   accessorFn: (row) => {
+    //     // const targetDiff = parseFloat(row.target_diff_percent);
 
-        //  const slPercent = targetDiff * 0.75;
+    //     //  const slPercent = targetDiff * 0.75;
 
-        // const stopLossPercentage = `${slPercent.toFixed(3)}%`;
-        let TrailingStopLoss = row.original.TSL;
+    //     // const stopLossPercentage = `${slPercent.toFixed(3)}%`;
+    //     let TrailingStopLoss = row.original.TSL;
 
-         TrailingStopLoss = `${TrailingStopLoss.toFixed(3)}%`;
+    //     TrailingStopLoss = `${TrailingStopLoss.toFixed(3)}%`;
 
-        if (row.signal === "Buy") {
-          return TrailingStopLoss;
-        }
-      },
+    //     if (row.signal === "Buy") {
+    //       return TrailingStopLoss;
+    //     }
+    //   },
 
-      cell: ({ row }) => {
-        const signal = row.original.signal.toLowerCase();
-        // const targetDiff = parseFloat(row.original.target_diff_percent);
+    //   cell: ({ row }) => {
+    //     const signal = row.original.signal.toLowerCase();
+    //     // const targetDiff = parseFloat(row.original.target_diff_percent);
 
-        let TrailingStopLoss = row.original.TSL;
+    //     let TrailingStopLoss = row.original.TSL;
 
-         TrailingStopLoss = `${TrailingStopLoss.toFixed(3)}%`;
+    //     TrailingStopLoss = `${TrailingStopLoss.toFixed(3)}%`;
 
-        return <span>{signal === "buy" ? TrailingStopLoss : "N/A"}</span>;
-      },
-    },
+    //     return <span>{signal === "buy" ? TrailingStopLoss : "N/A"}</span>;
+    //   },
+    // },
 
+    // {
+    //   accessorKey: "RiskRewardRatio",
+    //   header: "RRR",
 
+    //   accessorFn: (row) => {
+    //     const RRRsignal = row.original.riskRewardRatio;
 
-    {
-      accessorKey: "RiskRewardRatio",
-      header: "RRR",
+    //     const RRR = `${RRRsignal.toFixed(2)}`;
 
-      accessorFn: (row) => {
-        const RRRsignal = row.original.riskRewardRatio;
+    //     if (row.signal === "Buy") {
+    //       return RRR;
+    //     }
+    //   },
 
-        const RRR = `${RRRsignal.toFixed(2)}`;
+    //   cell: ({ row }) => {
+    //     const signal = row.original.signal.toLowerCase();
+    //     // const targetDiff = parseFloat(row.original.target_diff_percent);
 
-        if (row.signal === "Buy") {
-          return RRR;
-        }
-      },
+    //     // const slPercent = targetDiff * 0.75;
+    //     const RRRsignal = row.original.riskRewardRatio;
 
-      cell: ({ row }) => {
-        const signal = row.original.signal.toLowerCase();
-        // const targetDiff = parseFloat(row.original.target_diff_percent);
+    //     const RRR = `${RRRsignal.toFixed(2)}`;
 
-        // const slPercent = targetDiff * 0.75;
-        const RRRsignal = row.original.riskRewardRatio;
-
-        const RRR = `${RRRsignal.toFixed(2)}`;
-
-
-        return <span>{signal === "buy" ? RRR : "N/A"}</span>;
-      },
-    },
+    //     return <span>{signal === "buy" ? RRR : "N/A"}</span>;
+    //   },
+    // },
     {
       accessorKey: "predictedTime",
       header: "Predicted At",
@@ -628,72 +613,69 @@ const Index = () => {
         );
       },
     },
-    // {
-    //   accessorKey: "hit_time",
-    //   header: "HIT TIME",
-    //   accessorFn: (row) => {
-    //     if (row.hit_time === "Not Reached") return row.hit_time;
-    //     return DateTime.fromFormat(row.hit_time, "yyyy.MM.dd HH:mm:ss", {
-    //       zone: "UTC+1",
-    //     }).toMillis(); // sorting uses this timestamp
-    //   },
+    {
+      accessorKey: "hit_time",
+      header: "HIT TIME",
+      accessorFn: (row) => {
+        if (row.hit_time === "Not Reached" || !row.hit_time)
+          return "Not Reached";
+        return DateTime.fromFormat(row.hit_time, "yyyy.MM.dd HH:mm:ss", {
+          zone: "UTC+1",
+        }).toMillis(); // sorting uses this timestamp
+      },
 
-    //   cell: ({ row }) => {
-    //     // parseCustomDateString(row.original.hit_time) || "Not Reached";
+      cell: ({ row }) => {
+        // parseCustomDateString(row.original.hit_time) || "Not Reached";
 
-    //     if (row.original.hit_time === "Not Reached") return "Not Reached";
-    //     const hitTime = DateTime.fromFormat(row.original.hit_time, "yyyy.MM.dd HH:mm:ss", {
-    //       zone: "UTC+1",
-    //     }).toMillis();
+        if (row.original.hit_time === "Not Reached" || !row.original.hit_time)
+          return "Not Reached";
+        const hitTime = parseCustomDateString(row.original.hit_time);
 
-    //     let colorClass;
-    //     if (row.original.hit_time === "Not Reached")
-    //       colorClass = "text-red-400";
-    //     else colorClass = "text-green-400";
-    //     return (
-    //       <div className="flex items-center justify-end">
-    //         <span className={`font-medium ${colorClass}`}>
-    //           {hitTime}
-    //         </span>
-    //       </div>
-    //     );
-    //   },
-    // },
+        let colorClass;
+        if (row.original.hit_time === "Not Reached")
+          colorClass = "text-red-400";
+        else colorClass = "text-green-400";
+        return (
+          <div className="flex items-center justify-end">
+            <span className={`font-medium ${colorClass}`}>{hitTime}</span>
+          </div>
+        );
+      },
+    },
   ];
 
- const handleExportToExcel = () => {
-  const exportData = filteredSignals.map((row, index) => {
-    const targetPrice = row.currentPriceAtPredicition * 1.016;
+  const handleExportToExcel = () => {
+    const exportData = filteredSignals.map((row, index) => {
+      const targetPrice = row.currentPriceAtPredicition * 1.016;
 
-    return {
-      "S/NO": index + 1,
-      "TOKEN (NAME)": row.pairName,
-      "Prediction Time Price (USDT)": row.currentPriceAtPredicition.toFixed(8),
-      "TARGET PRICE (USDT)": targetPrice.toFixed(8),
-      "CURRENT PRICE (USDT)": parseFloat(row.currentPrice).toFixed(8),
-      "NOW DIFF (%)": row.now_diff_percent,
-      "CURRENT SIGNAL": row.signal === "Buy"? row.signal : "No Action",
-      "TARGET DIFF (%)": row.target_diff_percent,
-      "TP (%)": row.tpPercentage.toFixed(3),
-      "SL (%)": row.slPercentage.toFixed(3),
-      "RRR":  row.riskRewardRatio.toFixed(2),
-      "Predicted At":parseCustomDateString(row.predictedTime),
-      "Expires At" : parseCustomDateString(row.expiryTime),
-      "HIT STATUS": row.hit_status,
-      "HIT TIME": row.hit_time,
-    };
-  });
+      return {
+        "S/NO": index + 1,
+        "TOKEN (NAME)": row.pairName,
+        "Prediction Time Price (USDT)":
+          row.currentPriceAtPredicition.toFixed(8),
+        "TARGET PRICE (USDT)": targetPrice.toFixed(8),
+        "CURRENT PRICE (USDT)": parseFloat(row.currentPrice).toFixed(8),
+        "NOW DIFF (%)": row.now_diff_percent,
+        "CURRENT SIGNAL": row.signal === "Buy" ? row.signal : "No Action",
+        "TARGET DIFF (%)": row.target_diff_percent,
+        "TP (%)": row.tpPercentage.toFixed(3),
+        "SL (%)": row.slPercentage.toFixed(3),
+        RRR: row.riskRewardRatio.toFixed(2),
+        "Predicted At": parseCustomDateString(row.predictedTime),
+        "Expires At": parseCustomDateString(row.expiryTime),
+        "HIT STATUS": row.hit_status,
+        "HIT TIME": row.hit_time,
+      };
+    });
 
-  const worksheet = XLSX.utils.json_to_sheet(exportData);
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Signals");
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Signals");
 
-  const date = new Date();
+    const date = new Date();
 
-  XLSX.writeFile(workbook, "pancake_price_predictions.xlsx");
-};
-
-
+    XLSX.writeFile(workbook, "pancake_price_predictions.xlsx");
+  };
 
   return (
     <div className="min-h-screen bg-slate-800 text-white">
@@ -769,19 +751,19 @@ const Index = () => {
             initialTimezone={timezone}
           />
 
-            <div>
-              <Button
-                onClick={handleExportToExcel}
-                className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
-              >
-                <Download />
-              </Button>
-            </div>
+          <div>
+            <Button
+              onClick={handleExportToExcel}
+              className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
+            >
+              <Download />
+            </Button>
+          </div>
         </div>
 
         {/* Signal Statistics */}
         <div className="flex justify-center items-center">
-          <div className="grid grid-cols-2 gap-4 mb-8 ">
+          <div className="grid grid-cols-1 gap-4 mb-8 ">
             <div className="text-center">
               <span className="text-green-400 font-medium">
                 Buy: {filteredSignals.filter((s) => s.signal === "Buy").length}/
@@ -818,6 +800,7 @@ const Index = () => {
         </div>
 
         {/* AccuracyStats */}
+<<<<<<< HEAD
         {/* <div className="flex justify-between">
           <div>
             <span>PastAccuracy:</span>
@@ -830,9 +813,20 @@ const Index = () => {
 
 
         </div> */}
-
-
-        
+=======
+        <div className="flex flex-col sm:flex-row items-center sm:justify-between mb-6">
+          {accuracyStats?.pastAccuracy && !accuracyStats.pastAccuracy.includes("N/A") && (
+            <div>
+              <span>Past Accuracy: </span>
+              {accuracyStats?.pastAccuracy}
+            </div>
+          )}
+          <div>
+            <span>Current Accuracy: </span>
+            {accuracyStats?.currentAccuracy}
+          </div>
+        </div>
+>>>>>>> 2aa0e7b042acb6de6f4e322a584737f7586956e6
 
         {/* ✅ Error Message */}
         {queryError && (
@@ -856,7 +850,7 @@ const Index = () => {
       <div className="text-center py-4">
         <h3>Note</h3>
         <div>
-          <span>RRR &lt; 1 =&gt; Reward {'>'} Risk (GOOD) </span>
+          <span>RRR &lt; 1 =&gt; Reward {">"} Risk (GOOD) </span>
           <span>RRR = 1 =&gt; Reward = Risk</span>
           <span>RRR &gt; 1 =&gt; Reward &lt; Risk (BAD) </span>
         </div>
