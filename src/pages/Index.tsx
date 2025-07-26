@@ -296,9 +296,9 @@ const Index = () => {
       header: "TARGET PRICE (USDT)",
       cell: ({ row }) => {
         const PredictedTimePrice = Number(
-          row.original.currentPriceAtPredicition
+          row.original.lstmPrediction
         );
-        const TargetPrice = (PredictedTimePrice * 1.016).toFixed(8);
+        const TargetPrice = PredictedTimePrice;
         return (
           <div className="">
             <span className=" text-white">
