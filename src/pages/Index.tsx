@@ -292,17 +292,16 @@ const Index = () => {
     {
       accessorKey: "currentPriceAtPredicition",
       header: "Prediction Time Price (USDT)",
-      cell: ({ row }) => 
-        row.original.currentPriceAtPredicition? row.original.currentPriceAtPredicition.toFixed(8) : "N/A"
-
+      cell: ({ row }) =>
+        row.original.currentPriceAtPredicition
+          ? row.original.currentPriceAtPredicition.toFixed(8)
+          : "N/A",
     },
     {
       accessorKey: "target_price_usdt",
       header: "TARGET PRICE (USDT)",
       cell: ({ row }) => {
-        const PredictedTimePrice = Number(
-          row.original.combinedPrediction
-        );
+        const PredictedTimePrice = Number(row.original.combinedPrediction);
         const TargetPrice = PredictedTimePrice;
         return (
           <div className="">
@@ -429,9 +428,9 @@ const Index = () => {
       header: "TP (%)",
 
       accessorFn: (row) => {
-        const TakeProfit = row.original.tpPercentage;
-
-        const takeProfitPercentage = `${TakeProfit.toFixed(3)}%`;
+        const TakeProfit = row.tpPercentage;
+        let takeProfitPercentage = "N/A";
+        if (TakeProfit) takeProfitPercentage = `${TakeProfit.toFixed(3)}%`;
 
         // const takeProfitPercentage = `${tpPercent.toFixed(3)}%`;
 
@@ -445,11 +444,25 @@ const Index = () => {
         // const targetDiff = parseFloat(row.original.target_diff_percent);
 
         // const tpPercent = targetDiff * 0.85;
-        const TakeProfit = row.original.tpPercentage;
+        const TakeProfit = row.original.tpPercentage || "N/A";
 
-        const takeProfitPercentage = `${TakeProfit.toFixed(3)}%`;
+        let colorClass = "text-white";
 
-        return <span>{signal === "buy" ? takeProfitPercentage : "N/A"}</span>;
+        if (row.original.signal === "Buy") {
+          if (TakeProfit === "N/A") {
+            colorClass = "text-white";
+          } else if (TakeProfit.toString().includes("-")) {
+            colorClass = "text-red-400";
+          } else {
+            colorClass = "text-green-400";
+          }
+        }
+
+        return (
+          <span className={colorClass}>
+            {signal === "buy" ? `${TakeProfit.toFixed(3)}%` : "N/A"}
+          </span>
+        );
       },
     },
 
@@ -481,7 +494,21 @@ const Index = () => {
 
         const stopLossPercentage = `${stopLoss.toFixed(3)}%`;
 
-        return <span>{signal === "buy" ? stopLossPercentage : "N/A"}</span>;
+        let colorClass = "text-white";
+        if (row.original.signal === "Buy") {
+          if (stopLossPercentage === "N/A") {
+            colorClass = "text-white";
+          } else if (stopLossPercentage.toString().includes("-")) {
+            colorClass = "text-red-400";
+          } else {
+            colorClass = "text-green-400";
+          }
+        }
+        return (
+          <span className={colorClass}>
+            {signal === "buy" ? stopLossPercentage : "N/A"}
+          </span>
+        );
       },
     },
     // {
@@ -813,7 +840,6 @@ const Index = () => {
           </div>
         </div>
 
-          
         {/* Progress Bar */}
         <div className="mb-8">
           <div className="w-full bg-slate-700 rounded-full h-2">
@@ -821,28 +847,32 @@ const Index = () => {
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-center sm:items-start justify-center sm:justify-between mb-6 text-center sm:text-left">
-            {accuracyStats?.pastAccuracy && !accuracyStats.pastAccuracy.includes("N/A") && (
-                  <div className="text-lg mb-2 sm:mb-0">
-                        <span className="text-gray-300">Past Accuracy: </span>
-                        <span className="text-white">{accuracyStats?.pastAccuracy}</span>
-                  </div>
+        <div className="flex flex-col sm:flex-row justify-between items-center sm:items-baseline">
+          {accuracyStats?.pastAccuracy &&
+            !accuracyStats.pastAccuracy.includes("N/A") && (
+              <p className="text-lg text-center sm:text-left text-[#c8f5aa]">
+                Past Accuracy:{" "}
+                <span className="font-semibold">
+                  {accuracyStats?.pastAccuracy || "N/A"}
+                </span>
+              </p>
             )}
 
-          <div className="flex flex-col items-center sm:items-end mt-4 sm:mt-0">
-              <div className="text-lg mb-2">
-                <span className="text-gray-300">Present Accuracy: </span>
-                <span className="text-white">{accuracyStats?.currentAccuracy}</span>
-              </div>
-              <span className="text-red-600 text-sm">
-                The prediction is valid till {parseCustomDateString(filteredSignals[0]?.expiryTime)}
-              </span>
-              <span className="text-green-500 text-sm">
-                Next Update: {parseCustomDateString(filteredSignals[0]?.expiryTime)}
-              </span>
-          </div>
-          </div>
+          <p className="text-lg mb-2 text-yellow-300 text-center sm:text-right">
+            Present Accuracy:{" "}
+            <span className="font-semibold">
+              {accuracyStats?.currentAccuracy}
+            </span>
+          </p>
+        </div>
 
+        <p className="text-red-400 text-xs text-center sm:text-right">
+          The prediction is valid till{" "}
+          {parseCustomDateString(filteredSignals[0]?.expiryTime)}
+        </p>
+        <p className="text-green-400 text-xs mb-6 text-center sm:text-right">
+          Next Update: {parseCustomDateString(filteredSignals[0]?.expiryTime)}
+        </p>
 
         {/* ✅ Error Message */}
         {queryError && (
