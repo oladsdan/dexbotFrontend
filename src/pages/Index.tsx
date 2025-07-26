@@ -813,6 +813,7 @@ const Index = () => {
           </div>
         </div>
 
+          
         {/* Progress Bar */}
         <div className="mb-8">
           <div className="w-full bg-slate-700 rounded-full h-2">
@@ -820,19 +821,28 @@ const Index = () => {
           </div>
         </div>
 
-        {/* AccuracyStats */}
-        {/* <div className="flex flex-col sm:flex-row items-center sm:justify-between mb-6">
-          {accuracyStats?.pastAccuracy && !accuracyStats.pastAccuracy.includes("N/A") && (
-            <div>
-              <span>Past Accuracy: </span>
-              {accuracyStats?.pastAccuracy}
-            </div>
-          )}
-          <div>
-            <span>Current Accuracy: </span>
-            {accuracyStats?.currentAccuracy}
+        <div className="flex flex-col sm:flex-row items-center sm:items-start justify-center sm:justify-between mb-6 text-center sm:text-left">
+            {accuracyStats?.pastAccuracy && !accuracyStats.pastAccuracy.includes("N/A") && (
+                  <div className="text-lg mb-2 sm:mb-0">
+                        <span className="text-gray-300">Past Accuracy: </span>
+                        <span className="text-white">{accuracyStats?.pastAccuracy}</span>
+                  </div>
+            )}
+
+          <div className="flex flex-col items-center sm:items-end mt-4 sm:mt-0">
+              <div className="text-lg mb-2">
+                <span className="text-gray-300">Present Accuracy: </span>
+                <span className="text-white">{accuracyStats?.currentAccuracy}</span>
+              </div>
+              <span className="text-red-600 text-sm">
+                The prediction is valid till {parseCustomDateString(filteredSignals[0]?.expiryTime)}
+              </span>
+              <span className="text-green-500 text-sm">
+                Next Update: {parseCustomDateString(filteredSignals[0]?.expiryTime)}
+              </span>
           </div>
-        </div> */}
+          </div>
+
 
         {/* ✅ Error Message */}
         {queryError && (
