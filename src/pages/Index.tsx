@@ -292,18 +292,18 @@ const Index = () => {
     {
       accessorKey: "currentPriceAtPredicition",
       header: "Prediction Time Price (USDT)",
-      cell: ({ row }) =>
-        row.original.currentPriceAtPredicition &&
-        row.original.currentPriceAtPredicition.toFixed(8),
+      cell: ({ row }) => 
+        row.original.currentPriceAtPredicition? row.original.currentPriceAtPredicition.toFixed(8) : "N/A"
+
     },
     {
       accessorKey: "target_price_usdt",
       header: "TARGET PRICE (USDT)",
       cell: ({ row }) => {
         const PredictedTimePrice = Number(
-          row.original.currentPriceAtPredicition
+          row.original.combinedPrediction
         );
-        const TargetPrice = (PredictedTimePrice * 1.016).toFixed(8);
+        const TargetPrice = PredictedTimePrice;
         return (
           <div className="">
             <span className=" text-white">
