@@ -13,6 +13,7 @@ import monitoredTokens from "@/monitodTokens.json";
 import * as XLSX from "xlsx";
 import { access } from "fs";
 import { Download } from "lucide-react";
+import Footer from "@/components/Footer";
 
 export interface Signal {
   pairName: string;
@@ -295,9 +296,9 @@ const Index = () => {
       header: "TARGET PRICE (USDT)",
       cell: ({ row }) => {
         const PredictedTimePrice = Number(
-          row.original.targetPrice
+          row.original.currentPriceAtPredicition
         );
-        const TargetPrice = (PredictedTimePrice).toFixed(8);
+        const TargetPrice = (PredictedTimePrice * 1.016).toFixed(8);
         return (
           <div className="">
             <span className=" text-white">
@@ -372,31 +373,52 @@ const Index = () => {
         );
       },
     },
-   
-
-    // {
+    //  {
     //   accessorKey: "target_diff_percent",
     //   header: "TARGET DIFF(%)",
+    //   // cell: ({ row }) => row.original.target_diff_percent,
     //   cell: ({ row }) => {
-    //     const TargeDiff = row.original.target_diff_percent;
-
+    //      const PredictedTimePrice = Number(row.original.currentPriceAtPredicition)
+    //     const TargetPrice = PredictedTimePrice * 1.016
+    //     let TargetDiff = ((TargetPrice - PredictedTimePrice) / PredictedTimePrice) * 100;
+    //    const TargetDiffs = TargetDiff.toFixed(2)
     //     let colorClass = "text-white";
 
-    //     if (TargeDiff.includes("-")) {
-    //       colorClass = "text-red-400";
-    //     } else {
-    //       colorClass = "text-green-400";
-    //     }
-
+    //     if (TargetDiff > 0) colorClass = "text-green-400";
+    //     else if (TargetDiff < 0) colorClass = "text-red-400";
     //     return (
-    //       <div className="flex items-center justify-end">
-    //         <span className={`font-medium uppercase ${colorClass}`}>
-    //           {TargeDiff ? TargeDiff : "N/A"}
+    //       <div className="flex items-center">
+    //         <span className={`font-medium ${colorClass}`}>
+    //           {TargetDiffs ? `${TargetDiffs}%` : "N/A"}
     //         </span>
     //       </div>
-    //     );
-    //   },
+    //     )
+    //   }
     // },
+
+    {
+      accessorKey: "target_diff_percent",
+      header: "TARGET DIFF(%)",
+      cell: ({ row }) => {
+        const TargeDiff = row.original.target_diff_percent;
+
+        let colorClass = "text-white";
+
+        if (TargeDiff.includes("-")) {
+          colorClass = "text-red-400";
+        } else {
+          colorClass = "text-green-400";
+        }
+
+        return (
+          <div className="flex items-center justify-end">
+            <span className={`font-medium uppercase ${colorClass}`}>
+              {TargeDiff ? TargeDiff : "N/A"}
+            </span>
+          </div>
+        );
+      },
+    },
     {
       accessorKey: "takeProfitPercentage",
       header: "TP (%)",
@@ -404,7 +426,7 @@ const Index = () => {
       accessorFn: (row) => {
         const TakeProfit = row.original.tpPercentage;
 
-        const takeProfitPercentage = `${TakeProfit.toFixed(2)}%`;
+        const takeProfitPercentage = `${TakeProfit.toFixed(3)}%`;
 
         // const takeProfitPercentage = `${tpPercent.toFixed(3)}%`;
 
@@ -420,7 +442,7 @@ const Index = () => {
         // const tpPercent = targetDiff * 0.85;
         const TakeProfit = row.original.tpPercentage;
 
-        const takeProfitPercentage = `${TakeProfit.toFixed(2)}%`;
+        const takeProfitPercentage = `${TakeProfit.toFixed(3)}%`;
 
         return <span>{signal === "buy" ? takeProfitPercentage : "N/A"}</span>;
       },
@@ -436,25 +458,25 @@ const Index = () => {
         //  const slPercent = targetDiff * 0.75;
 
         // const stopLossPercentage = `${slPercent.toFixed(3)}%`;
-        // const stopLoss = row.original.slPercentage;
+        const stopLoss = row.original.slPercentage;
 
-        // const stopLossPercentage = `${stopLoss.toFixed(3)}%`;
+        const stopLossPercentage = `${stopLoss.toFixed(3)}%`;
 
-        // if (row.signal === "Buy") {
-        //   // return stopLossPercentage;
-        // }
+        if (row.signal === "Buy") {
+          return stopLossPercentage;
+        }
       },
 
       cell: ({ row }) => {
-        // const signal = row.original.signal.toLowerCase();
-        // // const targetDiff = parseFloat(row.original.target_diff_percent);
+        const signal = row.original.signal.toLowerCase();
+        // const targetDiff = parseFloat(row.original.target_diff_percent);
 
-        // // const slPercent = targetDiff * 0.75;
-        // const stopLoss = row.original.slPercentage;
+        // const slPercent = targetDiff * 0.75;
+        const stopLoss = row.original.slPercentage;
 
-        // const stopLossPercentage = `${stopLoss.toFixed(3)}%`;
+        const stopLossPercentage = `${stopLoss.toFixed(3)}%`;
 
-        // return <span>{signal === "buy" ? stopLossPercentage : "N/A"}</span>;
+        return <span>{signal === "buy" ? stopLossPercentage : "N/A"}</span>;
       },
     },
     // {
@@ -619,21 +641,21 @@ const Index = () => {
 
   const handleExportToExcel = () => {
     const exportData = filteredSignals.map((row, index) => {
-      // const targetPrice = row.currentPriceAtPredicition * 1.016;
+      const targetPrice = row.currentPriceAtPredicition * 1.016;
 
       return {
         "S/NO": index + 1,
         "TOKEN (NAME)": row.pairName,
         "Prediction Time Price (USDT)":
           row.currentPriceAtPredicition.toFixed(8),
-        "TARGET PRICE (USDT)": row.targetPrice.toFixed(8),
+        "TARGET PRICE (USDT)": targetPrice.toFixed(8),
         "CURRENT PRICE (USDT)": parseFloat(row.currentPrice).toFixed(8),
         "NOW DIFF (%)": row.now_diff_percent,
         "CURRENT SIGNAL": row.signal === "Buy" ? row.signal : "No Action",
         "TARGET DIFF (%)": row.target_diff_percent,
         "TP (%)": row.tpPercentage.toFixed(3),
-        // "SL (%)": row.slPercentage.toFixed(3),
-        // RRR: row.riskRewardRatio.toFixed(2),
+        "SL (%)": row.slPercentage.toFixed(3),
+        RRR: row.riskRewardRatio.toFixed(2),
         "Predicted At": parseCustomDateString(row.predictedTime),
         "Expires At": parseCustomDateString(row.expiryTime),
         "HIT STATUS": row.hit_status,
@@ -651,39 +673,37 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-800 text-white">
+    <div className="min-h-screen secure-body-background text-white">
       {/* Header Navigation */}
-      <header className="bg-teal-600 px-4 py-3">
+      <header className="bg-[#212529] px-4 py-3">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-8">
-            <div className="bg-black p-2 rounded">
+            <div className="p-2 rounded">
               <img
-                src="/logo.png"
+                src="/logo.jpg"
                 alt="Logo"
-                className="h-8 w-8 object-cover"
+                className="h-12 w-12 object-cover rounded-lg"
               />
             </div>
-            <nav className="hidden md:flex space-x-6">
-              <a href="#" className="text-white hover:text-teal-200">
-                Benefits
-              </a>
-              <a href="#" className="text-white hover:text-teal-200">
-                Testimonials
-              </a>
-              <a href="#" className="text-white hover:text-teal-200">
-                Performance
-              </a>
-              <a href="#" className="text-white hover:text-teal-200">
-                FAQ
-              </a>
-              <a href="#" className="text-green-400 hover:text-green-300">
-                Pancake.finance ↓
-              </a>
-            </nav>
+            <h1 className="font-bold">SECURE ARBITRAGE</h1>
           </div>
-          <Button className="bg-green-400 hover:bg-green-500 text-black font-medium px-6">
-            Start now →
-          </Button>
+          <a href="https://securearbitrage.com/sign-in">
+            <Button
+              style={{
+                background: "linear-gradient(45deg, #5B86E5, #36D1DC)", // Stylish gradient for the button
+                color: "#FFFFFF",
+                padding: "8px",
+                fontSize: "16px",
+                border: "none",
+                borderRadius: "8px",
+                cursor: "pointer",
+                transition: "0.3s ease",
+                boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.3)",
+              }}
+            >
+              Sign In
+            </Button>
+          </a>
         </div>
       </header>
 
@@ -691,7 +711,7 @@ const Index = () => {
       <main className="max-w-7xl mx-auto px-4 py-8">
         {/* Title Section */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-green-400 mb-4 text-center">
+          <h1 className="text-3xl font-bold mb-4 text-center">
             Signals - <span className="block sm:inline">Pancake.finance</span>
           </h1>
           <div className="text-center text-gray-400 mb-6">
@@ -792,7 +812,6 @@ const Index = () => {
             Failed to fetch signals. Please check your connection.
           </div>
         )}
-       
 
         {/* Data Table */}
         {isLoading ? (
@@ -804,6 +823,8 @@ const Index = () => {
           <DataTable columns={columns} data={filteredSignals} />
         )}
       </main>
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };
