@@ -57,6 +57,10 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
               path: "https://securearbitrage.com/crosschain-bnb-usdt-crosschain",
             },
             {
+              label: "Signals",
+              path: "https://signals.securearbitrage.com",
+            },
+            {
               label: "Announcements",
               path: "https://securearbitrage.com/announcements",
             },

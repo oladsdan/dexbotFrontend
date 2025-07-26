@@ -9,6 +9,7 @@ const links = [
   { path: "https://securearbitrage.com/past-opportunities", label: "Past Opportunities" },
   { path: "https://securearbitrage.com/auto-detector", label: "Auto Detector" },
   { path: "https://securearbitrage.com/crosschain-bnb-usdt-crosschain", label: "Cross Chain" },
+  { path: "https://signals.securearbitrage.com", label: "Signals" },
   { path: "https://securearbitrage.com/announcements", label: "Announcements" },
 ];
 
