@@ -296,7 +296,7 @@ const Index = () => {
       header: "TARGET PRICE (USDT)",
       cell: ({ row }) => {
         const PredictedTimePrice = Number(
-          row.original.xgboostPrediction
+          row.original.combinedPrediction
         );
         const TargetPrice = PredictedTimePrice;
         return (
