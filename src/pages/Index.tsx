@@ -289,7 +289,9 @@ const Index = () => {
     {
       accessorKey: "currentPriceAtPredicition",
       header: "Prediction Time Price (USDT)",
-      cell: ({ row }) => row.original.currentPriceAtPredicition.toFixed(8),
+      cell: ({ row }) => 
+        row.original.currentPriceAtPredicition? row.original.currentPriceAtPredicition.toFixed(8) : "N/A"
+
     },
     {
       accessorKey: "target_price_usdt",
