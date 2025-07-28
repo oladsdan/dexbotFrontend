@@ -306,7 +306,7 @@ const Index = () => {
 
         const handleCopy = () => {
           if (navigator.clipboard && address) {
-            navigator.clipboard.writeText(address)
+            navigator.clipboard.writeText(address);
           }
         };
 
@@ -396,11 +396,12 @@ const Index = () => {
       header: "SIGNAL",
       cell: ({ row }) => {
         const signal = row.original.signal.toLowerCase();
+        const hitStatus = row.original.hit_status.toLowerCase();
         return (
           <div className="flex items-center justify-end">
             {signal.toLowerCase() === "buy" ? (
               <Button className={`hover:cursor-pointer text-white uppercase`}>
-                {signal}
+                {hitStatus === "reached" ? "Buy - Reached" : "Buy"}
               </Button>
             ) : (
               <span className={` text-white uppercase`}>
@@ -822,6 +823,14 @@ const Index = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10 bg-slate-700 border-slate-600 text-white placeholder-gray-400"
             />
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm("")}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white focus:outline-none"
+              >
+                ✕
+              </button>
+            )}
           </div>
         </div>
 
