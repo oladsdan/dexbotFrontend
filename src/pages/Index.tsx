@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { Loader, Search } from "lucide-react";
+import { Copy, Loader, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
@@ -286,9 +286,43 @@ const Index = () => {
         const pairName = info.getValue();
         const symbol = pairName.split("/")[0];
         const assetName = tokenMap.get(symbol) || symbol;
-        return `${assetName} (${symbol})`;
+        return (
+          <span className="uppercase">
+            {assetName} ({symbol})
+          </span>
+        );
       },
     },
+    {
+      accessorKey: "pairAddress",
+      header: "ASSET CONTRACT",
+      cell: ({ row }) => {
+        const address: string = row.original.pairAddress;
+
+        const shortenedAddress =
+          address && address.length > 10
+            ? `${address.slice(0, 6)}...${address.slice(-4)}`
+            : address;
+
+        const handleCopy = () => {
+          if (navigator.clipboard && address) {
+            navigator.clipboard.writeText(address)
+          }
+        };
+
+        return (
+          <div className="flex items-center justify-end gap-2">
+            <span className="text-sm font-mono">{shortenedAddress}</span>
+            <Copy
+              size={16}
+              className="hover:text-blue-400 cursor-pointer"
+              onClick={handleCopy}
+            />
+          </div>
+        );
+      },
+    },
+
     {
       accessorKey: "currentPriceAtPredicition",
       header: "Prediction Time Price (USDT)",
@@ -850,7 +884,7 @@ const Index = () => {
         <div className="flex flex-col sm:flex-row justify-between items-center sm:items-baseline">
           {accuracyStats?.pastAccuracy &&
             !accuracyStats.pastAccuracy.includes("N/A") && (
-              <p className="text-lg text-center sm:text-left text-[#c8f5aa]">
+              <p className="text-xs text-center sm:text-left text-[#c8f5aa]">
                 Past Accuracy:{" "}
                 <span className="font-semibold">
                   {accuracyStats?.pastAccuracy || "N/A"}
@@ -858,7 +892,7 @@ const Index = () => {
               </p>
             )}
 
-          <p className="text-lg mb-2 text-yellow-300 text-center sm:text-right">
+          <p className="text-xs text-yellow-300 text-center sm:text-right">
             Present Accuracy:{" "}
             <span className="font-semibold">
               {accuracyStats?.currentAccuracy}
