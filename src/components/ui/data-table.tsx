@@ -139,7 +139,7 @@ export function DataTable<T>({ columns, data }: DataTableProps<T>) {
                         <div
                           className={
                             header.column.getCanSort()
-                              ? "cursor-pointer select-none flex items-center rounded"
+                              ? "cursor-pointer select-none flex items-center rounded justify-end"
                               : ""
                           }
                           onClick={header.column.getToggleSortingHandler()}

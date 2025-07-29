@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { Loader, Search } from "lucide-react";
+import { Copy, Loader, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
@@ -286,23 +286,58 @@ const Index = () => {
         const pairName = info.getValue();
         const symbol = pairName.split("/")[0];
         const assetName = tokenMap.get(symbol) || symbol;
-        return `${assetName} (${symbol})`;
+        return (
+          <span className="uppercase">
+            {assetName} ({symbol})
+          </span>
+        );
       },
     },
     {
+      accessorKey: "pairAddress",
+      header: "ASSET CONTRACT",
+      cell: ({ row }) => {
+        const address: string = row.original.pairAddress;
+
+        const shortenedAddress =
+          address && address.length > 10
+            ? `${address.slice(0, 6)}...${address.slice(-4)}`
+            : address;
+
+        const handleCopy = () => {
+          if (navigator.clipboard && address) {
+            navigator.clipboard.writeText(address);
+          }
+        };
+
+        const bscUrl = `https://bscscan.com/address/${address}`;
+
+        return (
+          <div className="flex items-center justify-end gap-2">
+            <span className="text-sm font-mono cursor-pointer" onClick={() => window.open(bscUrl)}>{shortenedAddress}</span>
+            <Copy
+              size={16}
+              className="hover:text-blue-400 cursor-pointer"
+              onClick={handleCopy}
+            />
+          </div>
+        );
+      },
+    },
+
+    {
       accessorKey: "currentPriceAtPredicition",
       header: "Prediction Time Price (USDT)",
-      cell: ({ row }) => 
-        row.original.currentPriceAtPredicition? row.original.currentPriceAtPredicition.toFixed(8) : "N/A"
-
+      cell: ({ row }) =>
+        row.original.currentPriceAtPredicition
+          ? row.original.currentPriceAtPredicition.toFixed(8)
+          : "N/A",
     },
     {
       accessorKey: "target_price_usdt",
       header: "TARGET PRICE (USDT)",
       cell: ({ row }) => {
-        const PredictedTimePrice = Number(
-          row.original.combinedPrediction
-        );
+        const PredictedTimePrice = Number(row.original.combinedPrediction);
         const TargetPrice = PredictedTimePrice;
         return (
           <div className="">
@@ -363,11 +398,12 @@ const Index = () => {
       header: "SIGNAL",
       cell: ({ row }) => {
         const signal = row.original.signal.toLowerCase();
+        const hitStatus = row.original.hit_status.toLowerCase();
         return (
           <div className="flex items-center justify-end">
             {signal.toLowerCase() === "buy" ? (
               <Button className={`hover:cursor-pointer text-white uppercase`}>
-                {signal}
+                {hitStatus === "reached" ? "Buy - Reached" : "Buy"}
               </Button>
             ) : (
               <span className={` text-white uppercase`}>
@@ -429,9 +465,9 @@ const Index = () => {
       header: "TP (%)",
 
       accessorFn: (row) => {
-        const TakeProfit = row.original.tpPercentage;
-
-        const takeProfitPercentage = `${TakeProfit.toFixed(3)}%`;
+        const TakeProfit = row.tpPercentage;
+        let takeProfitPercentage = "N/A";
+        if (TakeProfit) takeProfitPercentage = `${TakeProfit.toFixed(3)}%`;
 
         // const takeProfitPercentage = `${tpPercent.toFixed(3)}%`;
 
@@ -445,11 +481,25 @@ const Index = () => {
         // const targetDiff = parseFloat(row.original.target_diff_percent);
 
         // const tpPercent = targetDiff * 0.85;
-        const TakeProfit = row.original.tpPercentage;
+        const TakeProfit = row.original.tpPercentage || "N/A";
 
-        const takeProfitPercentage = `${TakeProfit.toFixed(3)}%`;
+        let colorClass = "text-white";
 
-        return <span>{signal === "buy" ? takeProfitPercentage : "N/A"}</span>;
+        if (row.original.signal === "Buy") {
+          if (TakeProfit === "N/A") {
+            colorClass = "text-white";
+          } else if (TakeProfit.toString().includes("-")) {
+            colorClass = "text-red-400";
+          } else {
+            colorClass = "text-green-400";
+          }
+        }
+
+        return (
+          <span className={colorClass}>
+            {signal === "buy" ? `${TakeProfit.toFixed(3)}%` : "N/A"}
+          </span>
+        );
       },
     },
 
@@ -481,7 +531,21 @@ const Index = () => {
 
         const stopLossPercentage = `${stopLoss.toFixed(3)}%`;
 
-        return <span>{signal === "buy" ? stopLossPercentage : "N/A"}</span>;
+        let colorClass = "text-white";
+        if (row.original.signal === "Buy") {
+          if (stopLossPercentage === "N/A") {
+            colorClass = "text-white";
+          } else if (stopLossPercentage.toString().includes("-")) {
+            colorClass = "text-red-400";
+          } else {
+            colorClass = "text-green-400";
+          }
+        }
+        return (
+          <span className={colorClass}>
+            {signal === "buy" ? stopLossPercentage : "N/A"}
+          </span>
+        );
       },
     },
     // {
@@ -761,6 +825,14 @@ const Index = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10 bg-slate-700 border-slate-600 text-white placeholder-gray-400"
             />
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm("")}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white focus:outline-none"
+              >
+                ✕
+              </button>
+            )}
           </div>
         </div>
 
@@ -813,7 +885,6 @@ const Index = () => {
           </div>
         </div>
 
-          
         {/* Progress Bar */}
         <div className="mb-8">
           <div className="w-full bg-slate-700 rounded-full h-2">
@@ -821,28 +892,32 @@ const Index = () => {
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-center sm:items-start justify-center sm:justify-between mb-6 text-center sm:text-left">
-            {accuracyStats?.pastAccuracy && !accuracyStats.pastAccuracy.includes("N/A") && (
-                  <div className="text-lg mb-2 sm:mb-0">
-                        <span className="text-gray-300">Past Accuracy: </span>
-                        <span className="text-white">{accuracyStats?.pastAccuracy}</span>
-                  </div>
+        <div className="flex flex-col sm:flex-row justify-between items-center sm:items-baseline">
+          {accuracyStats?.pastAccuracy &&
+            !accuracyStats.pastAccuracy.includes("N/A") && (
+              <p className="text-xs text-center sm:text-left text-[#c8f5aa]">
+                Past Accuracy:{" "}
+                <span className="font-semibold">
+                  {accuracyStats?.pastAccuracy || "N/A"}
+                </span>
+              </p>
             )}
 
-          <div className="flex flex-col items-center sm:items-end mt-4 sm:mt-0">
-              <div className="text-lg mb-2">
-                <span className="text-gray-300">Present Accuracy: </span>
-                <span className="text-white">{accuracyStats?.currentAccuracy}</span>
-              </div>
-              <span className="text-red-600 text-sm">
-                The prediction is valid till {parseCustomDateString(filteredSignals[0]?.expiryTime)}
-              </span>
-              <span className="text-green-500 text-sm">
-                Next Update: {parseCustomDateString(filteredSignals[0]?.expiryTime)}
-              </span>
-          </div>
+          <p className="text-xs text-yellow-300 text-center sm:text-right">
+            Present Accuracy:{" "}
+            <span className="font-semibold">
+              {accuracyStats?.currentAccuracy}
+            </span>
+          </p>
         </div>
 
+        <p className="text-red-400 text-xs text-center sm:text-right">
+          The prediction is valid till{" "}
+          {parseCustomDateString(filteredSignals[0]?.expiryTime)}
+        </p>
+        <p className="text-green-400 text-xs mb-6 text-center sm:text-right">
+          Next Update: {parseCustomDateString(filteredSignals[0]?.expiryTime)}
+        </p>
 
         {/* ✅ Error Message */}
         {queryError && (

@@ -64,31 +64,58 @@ export default function CurrentTimeDisplay({
     }
   };
 
-  useEffect(() => {
-    setHasMounted(true);
+  // useEffect(() => {
+  //   setHasMounted(true);
 
+  //   let tz = timezone || "UTC";
+  //   let countryName = "Unknown";
+
+  //   const savedCountryData = loadSavedCountry();
+  //   if (savedCountryData && savedCountryData.id) {
+  //     countryName = savedCountryData.name;
+  //     if (!timezone) {
+  //       const country = ct.getCountry(savedCountryData.id);
+  //       if (country && country.timezones.length > 0) {
+  //         tz = country.timezones[0];
+  //       }
+  //     }
+  //   }
+
+  //   const timer = setInterval(() => {
+  //     const now = new Date();
+  //     const timeStr = formatDate(now, tz);
+  //     setCurrentTime(`${timeStr} (${countryName})`);
+  //   }, 1000);
+
+  //   return () => clearInterval(timer);
+  // }, [timezone]);
+
+  useEffect(() => {
+  setHasMounted(true);
+
+  const timer = setInterval(() => {
+    const savedCountryData = loadSavedCountry();
     let tz = timezone || "UTC";
     let countryName = "Unknown";
 
-    const savedCountryData = loadSavedCountry();
     if (savedCountryData && savedCountryData.id) {
       countryName = savedCountryData.name;
       if (!timezone) {
         const country = ct.getCountry(savedCountryData.id);
-        if (country && country.timezones.length > 0) {
+        if (country?.timezones.length > 0) {
           tz = country.timezones[0];
         }
       }
     }
 
-    const timer = setInterval(() => {
-      const now = new Date();
-      const timeStr = formatDate(now, tz);
-      setCurrentTime(`${timeStr} (${countryName})`);
-    }, 1000);
+    const now = new Date();
+    const timeStr = formatDate(now, tz);
+    setCurrentTime(`${timeStr} (${countryName})`);
+  }, 1000);
 
-    return () => clearInterval(timer);
-  }, [timezone]);
+  return () => clearInterval(timer);
+}, [timezone]);
+
 
   if (!hasMounted) return null;
 
