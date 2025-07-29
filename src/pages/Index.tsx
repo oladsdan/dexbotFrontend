@@ -408,7 +408,7 @@ const Index = () => {
         return (
           <div className="flex items-center justify-end">
             {signal.toLowerCase() === "buy" ? (
-              <Button className={`hover:cursor-pointer text-white uppercase`}>
+              <Button className={`hover:cursor-pointer text-white uppercase ${hitStatus === "reached" ? "bg-purple-900" : ""}`}>
                 {hitStatus === "reached" ? "Buy - Reached" : "Buy"}
               </Button>
             ) : (
