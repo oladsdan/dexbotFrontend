@@ -16,6 +16,7 @@ import { Download } from "lucide-react";
 import Footer from "@/components/Footer";
 import MenuDropdown from "@/components/MenuDropDown";
 import Drawer from "@/components/Drawer";
+import { Link } from "react-router-dom";
 
 export interface Signal {
   pairName: string;
@@ -314,7 +315,12 @@ const Index = () => {
 
         return (
           <div className="flex items-center justify-end gap-2">
-            <span className="text-sm font-mono cursor-pointer" onClick={() => window.open(bscUrl)}>{shortenedAddress}</span>
+            <span
+              className="text-sm font-mono cursor-pointer"
+              onClick={() => window.open(bscUrl)}
+            >
+              {shortenedAddress}
+            </span>
             <Copy
               size={16}
               className="hover:text-blue-400 cursor-pointer"
@@ -709,18 +715,50 @@ const Index = () => {
   ];
 
   const handleExportToExcel = () => {
+    let earliestPredicted = null;
+    let latestExpiry = null;
     const exportData = filteredSignals.map((row, index) => {
       const targetPrice = row.currentPriceAtPredicition * 1.016;
+      const pairName = row.pairName;
+      const symbol = pairName.split("/")[0];
+      const assetName = tokenMap.get(symbol) || symbol;
+      const fullName = `${assetName} (${symbol})`;
 
+      const predictedAt = DateTime.fromFormat(
+        parseCustomDateString(row.predictedTime),
+        "dd.MM.yyyy HH:mm:ss"
+      );
+      const expiresAt = DateTime.fromFormat(
+        parseCustomDateString(row.expiryTime),
+        "dd.MM.yyyy HH:mm:ss"
+      );
+
+      if (!earliestPredicted || predictedAt < earliestPredicted) {
+        earliestPredicted = predictedAt;
+      }
+      if (!latestExpiry || expiresAt > latestExpiry) {
+        latestExpiry = expiresAt;
+      }
+
+      const signal = row.signal.toLowerCase();
+      const hitStatus = row.hit_status.toLowerCase();
+      let currentSignal = "No Action";
+      if (signal === "buy") {
+        currentSignal = "Buy";
+        if (hitStatus === "reached") {
+          currentSignal = "Buy - Reached";
+        }
+      }
       return {
-        "S/NO": index + 1,
-        "TOKEN (NAME)": row.pairName,
-        "Prediction Time Price (USDT)":
+        "#": index + 1,
+        "ASSET (Symbol)": fullName.toUpperCase(),
+        "ASSET CONTRACT": row.pairAddress,
+        "PREDICTION TIME PRICE (USDT)":
           row.currentPriceAtPredicition.toFixed(8),
         "TARGET PRICE (USDT)": targetPrice.toFixed(8),
         "CURRENT PRICE (USDT)": parseFloat(row.currentPrice).toFixed(8),
         "NOW DIFF (%)": row.now_diff_percent,
-        "CURRENT SIGNAL": row.signal === "Buy" ? row.signal : "No Action",
+        SIGNAL: currentSignal,
         "TARGET DIFF (%)": row.target_diff_percent,
         "TP (%)": row.tpPercentage.toFixed(3),
         "SL (%)": row.slPercentage.toFixed(3),
@@ -733,12 +771,31 @@ const Index = () => {
     });
 
     const worksheet = XLSX.utils.json_to_sheet(exportData);
+
+    // Auto-width codes starts here
+    const getMaxLength = (arr, key) =>
+      Math.max(
+        ...arr.map((row) => (row[key] ? row[key].toString().length : 0)),
+        key.length
+      );
+
+    // Auto-width estimation
+    const columnWidths = Object.keys(exportData[0]).map((key) => {
+      const maxLength = getMaxLength(exportData, key);
+      return { wch: maxLength + 2 }; // Optional padding
+    });
+
+    worksheet["!cols"] = columnWidths;
+
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Signals");
 
-    const date = new Date();
+    const startStr = earliestPredicted.toFormat("ddLLyyyy_HHmm");
+    const endStr = latestExpiry.toFormat("ddLLyyyy_HHmm");
 
-    XLSX.writeFile(workbook, "pancake_price_predictions.xlsx");
+    const fileName = `pancake_price_predictions_${startStr}_to_${endStr}.xlsx`;
+
+    XLSX.writeFile(workbook, fileName);
   };
 
   return (
@@ -748,11 +805,13 @@ const Index = () => {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Logo + Title */}
           <div className="flex items-center space-x-4">
-            <img
-              src="/logo.jpg"
-              alt="Logo"
-              className="h-12 w-12 object-cover rounded-lg"
-            />
+            <Link to="https://securearbitrage.com">
+              <img
+                src="/logo.jpg"
+                alt="Logo"
+                className="h-12 w-12 object-cover rounded-lg"
+              />
+            </Link>
             <h1 className="font-bold text-white text-lg">SECURE ARBITRAGE</h1>
           </div>
 
