@@ -311,7 +311,7 @@ const Index = () => {
           }
         };
 
-        const bscUrl = `https://bscscan.com/address/${address}`;
+        const bscUrl = `https://bscscan.com/token/${address}`;
 
         return (
           <div className="flex items-center justify-end gap-2">
