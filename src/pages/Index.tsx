@@ -951,7 +951,7 @@ const Index = () => {
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row justify-between items-center sm:items-baseline">
+        {/* <div className="flex flex-col sm:flex-row justify-between items-center sm:items-baseline">
           {accuracyStats?.pastAccuracy &&
             !accuracyStats.pastAccuracy.includes("N/A") && (
               <p className="text-xs text-center sm:text-left text-[#c8f5aa]">
@@ -968,7 +968,7 @@ const Index = () => {
               {accuracyStats?.currentAccuracy}
             </span>
           </p>
-        </div>
+        </div> */}
 
         <p className="text-red-400 text-xs text-center sm:text-right">
           The prediction is valid till{" "}
