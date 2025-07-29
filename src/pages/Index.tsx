@@ -310,9 +310,11 @@ const Index = () => {
           }
         };
 
+        const bscUrl = `https://bscscan.com/address/${address}`;
+
         return (
           <div className="flex items-center justify-end gap-2">
-            <span className="text-sm font-mono">{shortenedAddress}</span>
+            <span className="text-sm font-mono cursor-pointer" onClick={() => window.open(bscUrl)}>{shortenedAddress}</span>
             <Copy
               size={16}
               className="hover:text-blue-400 cursor-pointer"
