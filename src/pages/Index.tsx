@@ -841,7 +841,7 @@ const Index = () => {
                 Next Update: {parseCustomDateString(filteredSignals[0]?.expiryTime)}
               </span>
           </div>
-          </div>
+        </div>
 
 
         {/* ✅ Error Message */}
