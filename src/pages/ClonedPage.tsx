@@ -41,7 +41,7 @@ export interface Signal {
   direction: string;
 }
 
-const Index = () => {
+const ClonedPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentTime, setCurrentTime] = useState(new Date());
   // const [signals, setSignals] = useState([]);
@@ -1009,4 +1009,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default ClonedPage;
