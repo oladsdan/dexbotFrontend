@@ -457,14 +457,14 @@ const ClonedPage = () => {
         return (
           <div className="flex items-center justify-end z-50">
             {signal.toLowerCase() === "buy" ? (
-                <button 
+                <Button 
                 onClick={() => console.log("this button was clicked")}
                   className={`hover:cursor-pointer text-white uppercase ${
                     hitStatus === "reached" ? "bg-purple-900" : ""
                   }`}
                 >
                   {hitStatus === "reached" ? "Buy - Reached" : "Buy"}
-                </button>
+                </Button>
 
         
             ) : (
