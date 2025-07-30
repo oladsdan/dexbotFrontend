@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useContext } from "react";
+import { useState, useEffect, useMemo, useContext, } from "react";
 import { Copy, Loader, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import axios from "axios";
@@ -16,7 +16,7 @@ import { Download } from "lucide-react";
 import Footer from "@/components/Footer";
 import MenuDropdown from "@/components/MenuDropDown";
 import Drawer from "@/components/Drawer";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BuyToken } from "@/contractFunction/buyToken";
 import { StatusContext } from "@/context/statusContext";
 
@@ -45,8 +45,20 @@ export interface Signal {
 
 const ClonedPage = () => {
 
+  const navigate = useNavigate();
+
   //stateProvider
   const {priceBought, setPriceBought, userBalance, setUserBalance, txhash, setTxhash} = useContext(StatusContext);
+
+   const handleBuyToken = (symbol, tokenAddress, setPriceBought, setUserBalance, setTxhash) => {
+    BuyToken(symbol, tokenAddress, setPriceBought, setUserBalance, setTxhash);
+
+    //then we navigate to another page in 5s
+    setTimeout(() => {
+      navigate("/transactionDetails"); // replace with your target route
+    }, 5000);
+
+  }
 
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -421,9 +433,9 @@ const ClonedPage = () => {
         return (
           <div className="flex items-center justify-end">
             {signal.toLowerCase() === "buy" ? (
-              <Button onClick={() => BuyToken(symbol, tokenAddress, setPriceBought, setUserBalance, setTxhash)}
+              <Button onClick={() => handleBuyToken(symbol, tokenAddress, setPriceBought, setUserBalance, setTxhash)}
 
-              
+
                 className={`hover:cursor-pointer text-white uppercase ${
                   hitStatus === "reached" ? "bg-purple-900" : ""
                 }`}
