@@ -18,6 +18,12 @@ const BUSD = "0x55d398326f99059fF775485246999027B3197955";
 // Slippage settings
 const SLIPPAGE_PERCENT = 0.5; // 0.5%
 
+
+//smallabi
+const ERC20_ABI = [
+  "function balanceOf(address account) view returns (uint256)"
+];
+
 export const BuyToken = async (
   tokenName: string,
   tokenAddress: string,
@@ -39,6 +45,10 @@ export const BuyToken = async (
 
     const contract = new ethers.Contract(CONTRACT_ADDRESS, AutomatedTradingBotABI, signer);
     const router = new ethers.Contract(ROUTER_ADDRESS, PancakeRouterABI, provider);
+
+    // Create an instance of the BUSD token contract
+    const busdTokenContract = new ethers.Contract(BUSD, ERC20_ABI, provider);
+
 
     // Step 1: Check if token is allowed
     const allowedCount: bigint = await contract.getAllowedTokensCount();
@@ -64,7 +74,8 @@ export const BuyToken = async (
     setTokenName(tokenName);
 
     // Step 3: Check contract's BUSD balance
-    const busdBalance: bigint = await contract.getDepositBalance(BUSD);
+    // const busdBalance: bigint = await contract.getDepositBalance(BUSD);
+     const busdBalance: bigint = await busdTokenContract.balanceOf(CONTRACT_ADDRESS);
     const busdBalaneresult = formatEther(busdBalance);
     // console.log("this is the busdBalanresult", busdBalaneresult);
 
