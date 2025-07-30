@@ -21,10 +21,12 @@ const SLIPPAGE_PERCENT = 0.5; // 0.5%
 export const BuyToken = async (
   tokenName: string,
   tokenAddress: string,
-  setPriceBought: (val: number) => void,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setPriceBought: (val: any) => void,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setUserBalance: (val: any) => void,
-  setTxhash: (val: string) => void
+  setTxhash: (val: string) => void,
+  setTokenName: (val: string) => void
 ): Promise<void> => {
   try {
     if (!window.ethereum) throw new Error("MetaMask not found");
@@ -59,9 +61,16 @@ export const BuyToken = async (
     const approvalTx = await contract.setAssets(BUSD);
     await approvalTx.wait();
 
+    setTokenName(tokenName);
+
     // Step 3: Check contract's BUSD balance
     const busdBalance: bigint = await contract.getDepositBalance(BUSD);
-    setUserBalance(formatEther(busdBalance));
+    const busdBalaneresult = formatEther(busdBalance);
+    // console.log("this is the busdBalanresult", busdBalaneresult);
+
+
+    // console.log("this is the busd balance", busdBalance);
+    setUserBalance(busdBalaneresult);
 
     if (busdBalance <= 0n) {
       alert("No BUSD deposited in the smart contract.");
@@ -69,9 +78,11 @@ export const BuyToken = async (
     }
 
     // Step 4: Get expected output from PancakeSwap
-    const path = [BUSD, tokenAddress];
+    const path = [BUSD.toLowerCase(), tokenAddress.toLowerCase()];
     const amountsOut: bigint[] = await router.getAmountsOut(busdBalance, path);
     const minAmountOut: bigint = amountsOut[1];
+
+    console.log("this is the minAmountOut", minAmountOut);
 
     // Apply slippage: BigInt-safe
     const adjustedMinOut = minAmountOut - (minAmountOut * BigInt(Math.floor(SLIPPAGE_PERCENT * 1000)) / 100000n);
@@ -84,8 +95,14 @@ export const BuyToken = async (
     setTxhash(receipt.hash);
     if(receipt){
          const amountIn = parseUnits('1', 18);
-            const priceBout = await router.getAmountsOut(amountIn, path);
-            setPriceBought(parseFloat(formatEther(amountsOut[1])));
+            const priceBought = await router.getAmountsOut(amountIn, path);
+
+            // console.log("priceBought", priceBought);
+            const priceBought1 = formatEther(priceBought[0]);
+            const priceBoughtz = formatEther(priceBought[1]);
+            const price = Number(priceBought1) / Number(priceBoughtz);
+            // console.log("this is the amount out", amountOut);
+            setPriceBought(price);
         }
     // setPriceBought(parseFloat(formatEther(minAmountOut)));
 
@@ -95,3 +112,49 @@ export const BuyToken = async (
     alert("Something went wrong. Please try again.");
   }
 };
+
+export const SellToken = async (
+  tokenAddress: string,
+  setTxhash: (val: string) => void
+): Promise<void> => {
+  try {
+    if (!window.ethereum) throw new Error("MetaMask not found");
+
+    await window.ethereum.request({ method: "eth_requestAccounts" }); // ensures wallet connection
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const signer = await provider.getSigner();
+
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, AutomatedTradingBotABI, signer);
+    const router = new ethers.Contract(ROUTER_ADDRESS, PancakeRouterABI, provider);
+
+    const path = [tokenAddress.toLowerCase(), BUSD.toLowerCase()];
+
+    // 1. Get token balance from contract
+    const tokenBalance: bigint = await contract.getTokenBalance(tokenAddress);
+    if (tokenBalance <= 0n) {
+      alert("No tokens available in the contract to sell.");
+      return;
+    }
+
+    const approveTx = await contract.setAssets(tokenAddress); // use setAssets to approve
+    await approveTx.wait();
+
+    // 2. Get expected BUSD output
+    const amountsOut: bigint[] = await router.getAmountsOut(tokenBalance, path);
+    const expectedBUSD = amountsOut[1];
+
+    // 3. Apply slippage
+    const adjustedMinOut = expectedBUSD - (expectedBUSD * BigInt(Math.floor(SLIPPAGE_PERCENT * 1000)) / 100000n);
+    const deadline = Math.floor(Date.now() / 1000) + 600; // 10 minutes
+
+    // 4. Call smart contract to sell token
+    const sellTx = await contract.sellASSET(tokenAddress, tokenBalance, BUSD.toLowerCase(), adjustedMinOut, deadline);
+    const receipt = await sellTx.wait();
+
+    setTxhash(receipt.hash);
+    alert("✅ Token sold successfully!");
+  } catch (error) {
+    console.error("❌ SellToken Error:", error);
+    alert("Something went wrong while selling. Please try again.");
+  }
+}

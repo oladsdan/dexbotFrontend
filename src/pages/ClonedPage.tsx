@@ -48,7 +48,7 @@ const ClonedPage = () => {
   const navigate = useNavigate();
 
   //stateProvider
-  const {priceBought, setPriceBought, userBalance, setUserBalance, txhash, setTxhash} = useContext(StatusContext);
+  const {priceBought, setPriceBought, userBalance, setUserBalance, txhash, setTxhash, setTokenName, setTokenAddress} = useContext(StatusContext);
 
   //  const handleBuyToken = (symbol, tokenAddress, setPriceBought, setUserBalance, setTxhash) => {
 
@@ -62,6 +62,7 @@ const ClonedPage = () => {
 
   // }
   const handleBuyToken = async (
+  e: React.MouseEvent<HTMLButtonElement>,
   symbol: string,
   tokenAddress: string,
   setPriceBought: (val: number) => void,
@@ -69,13 +70,16 @@ const ClonedPage = () => {
   setTxhash: (val: string) => void
 ) => {
   try {
+    e.preventDefault(); 
     console.log("Buy button clicked");
 
-    await BuyToken(symbol, tokenAddress, setPriceBought, setUserBalance, setTxhash);
+    await BuyToken(symbol, tokenAddress, setPriceBought, setUserBalance, setTxhash, setTokenName);
+
+    setTokenAddress(tokenAddress);
 
     // Navigate only if BuyToken succeeds
     setTimeout(() => {
-      navigate("/transactionDetails");
+      navigate("/transaction-details");
     }, 5000);
   } catch (error) {
     console.error("BuyToken failed:", error);
@@ -450,7 +454,7 @@ const ClonedPage = () => {
         //symbol address
         let tokenAddress = row.original.pairAddress;
         tokenAddress = tokenAddress.toLowerCase();
-        // handleBuyToken(symbol, tokenAddress, setPriceBought, setUserBalance, setTxhash)
+        
 
         const signal = row.original.signal.toLowerCase();
         const hitStatus = row.original.hit_status.toLowerCase();
@@ -458,7 +462,7 @@ const ClonedPage = () => {
           <div className="flex items-center justify-end z-50">
             {signal.toLowerCase() === "buy" ? (
                 <Button 
-                onClick={() => console.log("this button was clicked")}
+                onClick={(e) => handleBuyToken(e, symbol, tokenAddress, setPriceBought, setUserBalance, setTxhash)}
                   className={`hover:cursor-pointer text-white uppercase ${
                     hitStatus === "reached" ? "bg-purple-900" : ""
                   }`}

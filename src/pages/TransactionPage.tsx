@@ -1,5 +1,8 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import { Button } from "@/components/ui/button";
+import { StatusContext } from "@/context/statusContext";
+import { SellToken } from "@/contractFunction/buyToken";
 import {
   ExternalLink,
   TrendingUp,
@@ -8,17 +11,51 @@ import {
   DollarSign,
   Coins,
 } from "lucide-react";
+import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 
 // Replace this with data from context, props, or API
-const transaction = {
-  symbol: "ETH",
-  priceBought: 1850.75,
-  usdtUsed: 100,
-  txHash: "0xabc123456789abcdef",
-  date: "2025-07-30T09:45:00Z",
-};
+
 
 export default function TransactionPage() {
+
+  let Ada = "0x3EE2200Efb3400fAbB9AacF31297cBdD1d435D47";
+
+  Ada =Ada.toLowerCase();
+
+  const navigate = useNavigate();
+  
+   const {priceBought, setPriceBought, userBalance, setUserBalance, txhash, setTxhash, tokenAddress, tokenName} = useContext(StatusContext);
+
+   console.log("this is the priceBought", priceBought);
+   console.log("this is the userBalance", userBalance);
+   console.log("this is the transaction hash", txhash);
+
+
+
+   const handleSellToken = async(
+  tokenAddress: string,
+  setTxhash: (val: string) => void
+) => {
+  console.log("Sell button clicked");
+ await SellToken(tokenAddress, setTxhash);
+
+  // Optional: navigate after 5s
+  setTimeout(() => {
+    navigate("/password-protected"); // replace with your actual route
+  }, 5000);
+    };
+
+  const transaction = {
+  symbol: tokenName,
+  priceBought: priceBought.toFixed(6),
+  usdtUsed: Number(userBalance).toFixed(3),
+  txHash: `https://bscscan.com/tx/${txhash}`,
+  date: new Date().toLocaleString(),
+};
+
+
+
   return (
     <div className="secure-body-background min-h-screen flex flex-col">
       <Navbar />
@@ -58,7 +95,7 @@ export default function TransactionPage() {
                   </span>
                 </div>
                 <span className="font-semibold text-gray-900">
-                  ${transaction.priceBought.toFixed(2)}
+                  ${transaction.priceBought}
                 </span>
               </div>
 
@@ -71,7 +108,7 @@ export default function TransactionPage() {
                   <span className="font-medium text-gray-900">USDT Used</span>
                 </div>
                 <span className="font-semibold text-gray-900">
-                  ${transaction.usdtUsed.toFixed(2)}
+                  ${transaction.usdtUsed}
                 </span>
               </div>
 
@@ -115,6 +152,11 @@ export default function TransactionPage() {
                   <ExternalLink className="w-4 h-4 text-gray-400 group-hover:text-gray-600 flex-shrink-0" />
                 </a>
               </div>
+
+
+
+              {/* sellToken */}
+              <Button onClick={() => handleSellToken(tokenAddress.toLowerCase(), setTxhash)}>SELL</Button>
             </div>
           </div>
         </div>
