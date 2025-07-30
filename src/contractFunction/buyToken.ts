@@ -29,6 +29,9 @@ export const BuyToken = async (
   try {
     if (!window.ethereum) throw new Error("MetaMask not found");
 
+    // 🔥 Ask MetaMask to connect wallet — this triggers the popup
+    await window.ethereum.request({ method: "eth_requestAccounts" });
+
     const provider = new ethers.BrowserProvider(window.ethereum);
     const signer = await provider.getSigner();
 
