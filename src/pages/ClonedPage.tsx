@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useContext, } from "react";
 import { Copy, Loader, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import axios from "axios";
@@ -16,7 +16,9 @@ import { Download } from "lucide-react";
 import Footer from "@/components/Footer";
 import MenuDropdown from "@/components/MenuDropDown";
 import Drawer from "@/components/Drawer";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { BuyToken } from "@/contractFunction/buyToken";
+import { StatusContext } from "@/context/statusContext";
 
 export interface Signal {
   pairName: string;
@@ -42,6 +44,50 @@ export interface Signal {
 }
 
 const ClonedPage = () => {
+
+  const navigate = useNavigate();
+
+  //stateProvider
+  const {priceBought, setPriceBought, userBalance, setUserBalance, txhash, setTxhash, setTokenName, setTokenAddress} = useContext(StatusContext);
+
+  //  const handleBuyToken = (symbol, tokenAddress, setPriceBought, setUserBalance, setTxhash) => {
+
+  //   console.log("this was clicked")
+  //   BuyToken(symbol, tokenAddress, setPriceBought, setUserBalance, setTxhash);
+
+  //   //then we navigate to another page in 5s
+  //   setTimeout(() => {
+  //     navigate("/transactionDetails"); // replace with your target route
+  //   }, 5000);
+
+  // }
+  const handleBuyToken = async (
+  e: React.MouseEvent<HTMLButtonElement>,
+  symbol: string,
+  tokenAddress: string,
+  setPriceBought: (val: number) => void,
+  setUserBalance: (val: number) => void,
+  setTxhash: (val: string) => void
+) => {
+  try {
+    e.preventDefault(); 
+    console.log("Buy button clicked");
+
+    await BuyToken(symbol, tokenAddress, setPriceBought, setUserBalance, setTxhash, setTokenName);
+
+    setTokenAddress(tokenAddress);
+
+    // Navigate only if BuyToken succeeds
+    setTimeout(() => {
+      navigate("/transaction-details");
+    }, 5000);
+  } catch (error) {
+    console.error("BuyToken failed:", error);
+    alert("Failed to execute buy. Please try again.");
+  }
+};
+
+
   const [searchTerm, setSearchTerm] = useState("");
   const [currentTime, setCurrentTime] = useState(new Date());
   // const [signals, setSignals] = useState([]);
@@ -403,18 +449,28 @@ const ClonedPage = () => {
       accessorKey: "signal",
       header: "SIGNAL",
       cell: ({ row }) => {
+        const pairName = row.original.pairName;
+        const symbol = pairName.split("/")[0];
+        //symbol address
+        let tokenAddress = row.original.pairAddress;
+        tokenAddress = tokenAddress.toLowerCase();
+        
+
         const signal = row.original.signal.toLowerCase();
         const hitStatus = row.original.hit_status.toLowerCase();
         return (
-          <div className="flex items-center justify-end">
+          <div className="flex items-center justify-end z-50">
             {signal.toLowerCase() === "buy" ? (
-              <Button
-                className={`hover:cursor-pointer text-white uppercase ${
-                  hitStatus === "reached" ? "bg-purple-900" : ""
-                }`}
-              >
-                {hitStatus === "reached" ? "Buy - Reached" : "Buy"}
-              </Button>
+                <Button 
+                onClick={(e) => handleBuyToken(e, symbol, tokenAddress, setPriceBought, setUserBalance, setTxhash)}
+                  className={`hover:cursor-pointer text-white uppercase ${
+                    hitStatus === "reached" ? "bg-purple-900" : ""
+                  }`}
+                >
+                  {hitStatus === "reached" ? "Buy - Reached" : "Buy"}
+                </Button>
+
+        
             ) : (
               <span className={` text-white uppercase`}>
                 {signal.toLowerCase() === "hold" ? "No Action" : signal}
@@ -1003,6 +1059,7 @@ const ClonedPage = () => {
           <DataTable columns={columns} data={filteredSignals} />
         )}
       </main>
+  
       {/* Footer */}
       <Footer />
     </div>
