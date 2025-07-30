@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import PasswordProtectedRoute from "./pages/PasswordProtectedRoute";
+import TransactionPage from "./pages/TransactionPage";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +21,7 @@ const App = () => (
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
           <Route path="/password-protected" element={<PasswordProtectedRoute />} />
+          <Route path="/transaction-details" element={<TransactionPage />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

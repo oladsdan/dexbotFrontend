@@ -11,7 +11,6 @@ interface StatusContextType {
 }
 
 // Create context with undefined default (safer for TS inference)
-// eslint-disable-next-line react-refresh/only-export-components
 export const StatusContext = createContext<StatusContextType | undefined>(undefined);
 
 // Props for the provider
