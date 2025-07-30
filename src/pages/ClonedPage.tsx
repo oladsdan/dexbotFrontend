@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useContext } from "react";
 import { Copy, Loader, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import axios from "axios";
@@ -17,6 +17,8 @@ import Footer from "@/components/Footer";
 import MenuDropdown from "@/components/MenuDropDown";
 import Drawer from "@/components/Drawer";
 import { Link } from "react-router-dom";
+import { BuyToken } from "@/contractFunction/buyToken";
+import { StatusContext } from "@/context/statusContext";
 
 export interface Signal {
   pairName: string;
@@ -42,6 +44,11 @@ export interface Signal {
 }
 
 const ClonedPage = () => {
+
+  //stateProvider
+  const {priceBought, setPriceBought, userBalance, setUserBalance, txhash, setTxhash} = useContext(StatusContext);
+
+
   const [searchTerm, setSearchTerm] = useState("");
   const [currentTime, setCurrentTime] = useState(new Date());
   // const [signals, setSignals] = useState([]);
@@ -403,12 +410,20 @@ const ClonedPage = () => {
       accessorKey: "signal",
       header: "SIGNAL",
       cell: ({ row }) => {
+        const pairName = row.original.pairName;
+        const symbol = pairName.split("/")[0];
+        //symbol address
+        let tokenAddress = row.original.pairAddress;
+        tokenAddress = tokenAddress.toLowerCase();
+
         const signal = row.original.signal.toLowerCase();
         const hitStatus = row.original.hit_status.toLowerCase();
         return (
           <div className="flex items-center justify-end">
             {signal.toLowerCase() === "buy" ? (
-              <Button
+              <Button onClick={() => BuyToken(symbol, tokenAddress, setPriceBought, setUserBalance, setTxhash)}
+
+              
                 className={`hover:cursor-pointer text-white uppercase ${
                   hitStatus === "reached" ? "bg-purple-900" : ""
                 }`}
