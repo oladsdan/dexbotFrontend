@@ -50,15 +50,38 @@ const ClonedPage = () => {
   //stateProvider
   const {priceBought, setPriceBought, userBalance, setUserBalance, txhash, setTxhash} = useContext(StatusContext);
 
-   const handleBuyToken = (symbol, tokenAddress, setPriceBought, setUserBalance, setTxhash) => {
-    BuyToken(symbol, tokenAddress, setPriceBought, setUserBalance, setTxhash);
+  //  const handleBuyToken = (symbol, tokenAddress, setPriceBought, setUserBalance, setTxhash) => {
 
-    //then we navigate to another page in 5s
+  //   console.log("this was clicked")
+  //   BuyToken(symbol, tokenAddress, setPriceBought, setUserBalance, setTxhash);
+
+  //   //then we navigate to another page in 5s
+  //   setTimeout(() => {
+  //     navigate("/transactionDetails"); // replace with your target route
+  //   }, 5000);
+
+  // }
+  const handleBuyToken = async (
+  symbol: string,
+  tokenAddress: string,
+  setPriceBought: (val: number) => void,
+  setUserBalance: (val: number) => void,
+  setTxhash: (val: string) => void
+) => {
+  try {
+    console.log("Buy button clicked");
+
+    await BuyToken(symbol, tokenAddress, setPriceBought, setUserBalance, setTxhash);
+
+    // Navigate only if BuyToken succeeds
     setTimeout(() => {
-      navigate("/transactionDetails"); // replace with your target route
+      navigate("/transactionDetails");
     }, 5000);
-
+  } catch (error) {
+    console.error("BuyToken failed:", error);
+    alert("Failed to execute buy. Please try again.");
   }
+};
 
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -427,21 +450,23 @@ const ClonedPage = () => {
         //symbol address
         let tokenAddress = row.original.pairAddress;
         tokenAddress = tokenAddress.toLowerCase();
+        // handleBuyToken(symbol, tokenAddress, setPriceBought, setUserBalance, setTxhash)
 
         const signal = row.original.signal.toLowerCase();
         const hitStatus = row.original.hit_status.toLowerCase();
         return (
-          <div className="flex items-center justify-end">
+          <div className="flex items-center justify-end z-50">
             {signal.toLowerCase() === "buy" ? (
-              <Button onClick={() => handleBuyToken(symbol, tokenAddress, setPriceBought, setUserBalance, setTxhash)}
+                <button 
+                onClick={() => console.log("this button was clicked")}
+                  className={`hover:cursor-pointer text-white uppercase ${
+                    hitStatus === "reached" ? "bg-purple-900" : ""
+                  }`}
+                >
+                  {hitStatus === "reached" ? "Buy - Reached" : "Buy"}
+                </button>
 
-
-                className={`hover:cursor-pointer text-white uppercase ${
-                  hitStatus === "reached" ? "bg-purple-900" : ""
-                }`}
-              >
-                {hitStatus === "reached" ? "Buy - Reached" : "Buy"}
-              </Button>
+        
             ) : (
               <span className={` text-white uppercase`}>
                 {signal.toLowerCase() === "hold" ? "No Action" : signal}
@@ -1030,6 +1055,7 @@ const ClonedPage = () => {
           <DataTable columns={columns} data={filteredSignals} />
         )}
       </main>
+  
       {/* Footer */}
       <Footer />
     </div>
