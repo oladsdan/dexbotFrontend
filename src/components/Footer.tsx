@@ -10,7 +10,7 @@ const Footer = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Left Side: Company Info */}
             <div>
-              <h5 className="text-lg font-semibold">securearbitrage.com</h5>
+              <h5 className="text-lg font-semibold">THEDEXBOT.COM</h5>
               <hr className="border-t border-[#595C5F] w-1/2 my-2" />
               <img
                 alt="logo"
@@ -30,27 +30,27 @@ const Footer = () => {
               <hr className="border-t border-[#595C5F] w-1/2 my-2" />
               <ul className="space-y-2">
                 <li>
-                  <NavLink to="https://securearbitrage.com/" className="text-white hover:underline">
+                  <NavLink to="/" className="text-white hover:underline">
                     Home
                   </NavLink>
                 </li>
                 <li>
-                  <NavLink to="https://securearbitrage.com/about-us" className="text-white hover:underline">
+                  <NavLink to="#" className="text-white hover:underline">
                     About Us
                   </NavLink>
                 </li>
                 <li>
-                  <NavLink to="https://securearbitrage.com/pricing" className="text-white hover:underline">
+                  <NavLink to="#" className="text-white hover:underline">
                     Pricing
                   </NavLink>
                 </li>
                 <li>
-                  <NavLink to="https://securearbitrage.com/how-it-works" className="text-white hover:underline">
+                  <NavLink to="#" className="text-white hover:underline">
                     How It Works
                   </NavLink>
                 </li>
                 <li>
-                  <NavLink to="https://securearbitrage.com/faqs" className="text-white hover:underline">
+                  <NavLink to="#" className="text-white hover:underline">
                     FAQs
                   </NavLink>
                 </li>
@@ -61,7 +61,7 @@ const Footer = () => {
             <div>
               <h5 className="text-lg font-semibold">CONTACT INFO</h5>
               <hr className="border-t border-[#595C5F] w-1/2 my-2" />
-              <p className="text-sm">Email: support@securearbitrage.com</p>
+              <p className="text-sm ">Email: support@thedexbot.com</p>
             </div>
           </div>
         </div>
@@ -70,7 +70,7 @@ const Footer = () => {
         <hr className="border-t border-[#595C5F] mt-8" />
         <div className="bg-[#212529] text-center py-4">
           <p className="text-sm mb-0">
-            &copy; {new Date().getFullYear()} securearbitrage.com. All Rights Reserved.
+            &copy; {new Date().getFullYear()} thedexbot.com. All Rights Reserved.
           </p>
         </div>
       </footer>

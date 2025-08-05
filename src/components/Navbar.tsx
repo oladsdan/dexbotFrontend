@@ -18,7 +18,7 @@ export default function Navbar() {
                 className="h-12 w-12 object-cover rounded-lg"
               />
             </Link>
-            <h1 className="font-bold text-white text-lg">SECURE ARBITRAGE</h1>
+            <h1 className="font-bold text-white text-lg">THEDEXBOT.COM</h1>
           </div>
 
           {/* Right Side */}
