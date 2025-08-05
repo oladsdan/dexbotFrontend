@@ -1,28 +1,22 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import MenuDropdown from "./MenuDropDown";
-import { Button } from "./ui/button";
-import Drawer from "./Drawer";
-
 export default function Navbar() {
-      const [drawerOpen, setDrawerOpen] = useState(false);
+      // const [drawerOpen, setDrawerOpen] = useState(false);
     return (
-        <header className="bg-[#212529] px-4 py-3">
+        <header className="bg-[#212529] px-4 py-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Logo + Title */}
           <div className="flex items-center space-x-4">
-            <h1 className="font-bold text-white text-lg">THEDEXBOT.COM</h1>
+            <a href="/" className="font-bold text-white text-xl">THEDEXBOT.COM</a>
           </div>
 
           {/* Right Side */}
           <div className="flex items-center space-x-4">
             {/* Desktop Menu Dropdown */}
-            <div className="hidden md:block">
+            {/* <div className="hidden md:block">
               <MenuDropdown />
-            </div>
+            </div> */}
 
             {/* Sign In (Desktop Only) */}
-            <a
+            {/* <a
               href="https://securearbitrage.com/sign-in"
               className="hidden md:inline-block"
             >
@@ -41,20 +35,20 @@ export default function Navbar() {
               >
                 Sign In
               </Button>
-            </a>
+            </a> */}
 
             {/* Hamburger Menu (Mobile Only) */}
-            <button
+            {/* <button
               className="text-white text-2xl md:hidden"
               onClick={() => setDrawerOpen(true)}
             >
               ☰
-            </button>
+            </button> */}
           </div>
         </div>
 
         {/* Drawer (Mobile Only) */}
-        <Drawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
+        {/* <Drawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} /> */}
       </header>
     );
 }

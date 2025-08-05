@@ -7,6 +7,9 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import PasswordProtectedRoute from "./pages/PasswordProtectedRoute";
 import TransactionPage from "./pages/TransactionPage";
+import Layout from "./components/Layout";
+import SignalsPage from "./pages/Signals";
+import ContractStatusPage from "./pages/ContractStatus";
 
 const queryClient = new QueryClient();
 
@@ -16,13 +19,29 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-          <Route path="/password-protected" element={<PasswordProtectedRoute />} />
-          <Route path="/transaction-details" element={<TransactionPage />} />
-        </Routes>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+            <Route
+              path="/password-protected"
+              element={<PasswordProtectedRoute />}
+            />
+            <Route
+              path="/signals"
+              element={<SignalsPage />}
+            />
+            <Route
+              path="/contract-status"
+              element={<ContractStatusPage />}
+            />
+            <Route
+              path="/transaction-details"
+              element={<TransactionPage />}
+            />
+          </Routes>
+        </Layout>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

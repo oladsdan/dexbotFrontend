@@ -1,5 +1,3 @@
-import Footer from "@/components/Footer";
-import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { StatusContext } from "@/context/statusContext";
 import { SellToken } from "@/contractFunction/buyToken";
@@ -58,7 +56,6 @@ export default function TransactionPage() {
 
   return (
     <div className="secure-body-background min-h-screen flex flex-col">
-      <Navbar />
       <main className="flex-grow flex items-center justify-center px-4 py-8">
         <div className="max-w-md w-full">
           <div className="bg-white rounded-2xl shadow-lg border  overflow-hidden">
@@ -161,7 +158,6 @@ export default function TransactionPage() {
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 }
