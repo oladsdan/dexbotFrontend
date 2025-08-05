@@ -3,9 +3,12 @@ import axios from "axios";
 import { DateTime } from "luxon";
 import { Copy, Loader } from "lucide-react";
 import { DataTable } from "@/components/ui/data-table";
+import monitoredTokens from "@/monitodTokens.json";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 export default function ContractStatusPage() {
   const apiUrl = "https://backend.thedexbot.com/apis/contract-status";
+  const [processedContractData, setProcessedContractData] = useState([]);
 
   const fetchContractStatus = async () => {
     const { data } = await axios.get(apiUrl);
@@ -23,60 +26,164 @@ export default function ContractStatusPage() {
     refetchInterval: 2000, // Refetch every 1 seconds
   });
 
+  const tokenMap = useMemo(() => {
+    const map = new Map();
+    monitoredTokens.monitoredTokens.forEach((token) => {
+      map.set(token.symbol, token.name);
+    });
+    return map;
+  }, []);
+
+  const processContractData = useCallback(() => {
+    if (!contractStatusData || !Array.isArray(contractStatusData)) {
+      console.log(
+        "Contract data is not available or not an array:",
+        contractStatusData
+      );
+      return;
+    }
+
+    try {
+      const processed = contractStatusData.map((item, index) => {
+        const {
+          type,
+          name,
+          token,
+          tokenIn,
+          tokenOut,
+          amountIn,
+          amountOut,
+          txHash,
+          timestamp,
+        } = item;
+
+        // Determine the token address for asset name
+        let assetAddress: string | undefined = undefined;
+
+        if (name) {
+          const symbol = name.split("/")[0];
+          const assetName = tokenMap.get(symbol) || symbol;
+          return {
+            ...item,
+            serialNo: index + 1,
+            asset: `${assetName} (${symbol})`,
+            amountIn: amountIn ? parseFloat(amountIn).toFixed(6) : "N/A",
+            amountOut: amountOut ? parseFloat(amountOut).toFixed(6) : "N/A",
+            formattedTimestamp: timestamp
+              ? DateTime.fromMillis(Number(timestamp)).toFormat(
+                  "dd.MM.yyyy HH:mm:ss"
+                )
+              : "N/A",
+          };
+        }
+
+        if (type === "Sell") {
+          assetAddress = tokenIn;
+        } else if (type === "Buy") {
+          assetAddress = tokenOut;
+        } else if (type === "TokenAdded") {
+          assetAddress = token;
+        }
+
+        const address = assetAddress?.toLowerCase();
+        const matched = monitoredTokens.monitoredTokens.find(
+          (t) => t.address.toLowerCase() === address
+        );
+
+        const symbol =
+          matched?.symbol ||
+          (assetAddress
+            ? `${assetAddress.slice(0, 6)}...${assetAddress.slice(-4)}`
+            : "UNKNOWN");
+        const assetName = matched?.name || "Unknown";
+
+        return {
+          ...item,
+          serialNo: index + 1,
+          asset: `${assetName} (${symbol})`,
+          amountIn: amountIn ? parseFloat(amountIn).toFixed(6) : "N/A",
+          amountOut: amountOut ? parseFloat(amountOut).toFixed(6) : "N/A",
+          formattedTimestamp: timestamp
+            ? DateTime.fromMillis(Number(timestamp)).toFormat(
+                "dd.MM.yyyy HH:mm:ss"
+              )
+            : "N/A",
+        };
+      });
+
+      setProcessedContractData(processed);
+    } catch (err) {
+      console.error("Error processing contract data:", err);
+    }
+  }, [contractStatusData, tokenMap]);
+
+  useEffect(() => {
+    processContractData();
+  }, [contractStatusData, processContractData]);
+
   const columns = [
+    {
+      accessorKey: "serialNo",
+      header: "#",
+      enableSorting: false,
+    },
     {
       accessorKey: "type",
       header: "EVENT TYPE",
       cell: ({ row }) => {
-        const type = row.original.type;
-        return <span className="uppercase font-medium">{type}</span>;
+        return (
+          <span className="uppercase font-medium">{row.original.type}</span>
+        );
       },
     },
     {
-      accessorKey: "tokenName",
-      header: "TOKEN NAME",
+      accessorKey: "asset",
+      header: "ASSET (SYMBOL)",
       cell: ({ row }) => {
-        const type = row.original.type;
-        if (type === "TokenAdded") {
-          return (
-            <span className="uppercase font-medium">
-              {row.original.name || "UNKNOWN"}
-            </span>
-          );
-        }
-        return "N/A";
+        return (
+          <span className="uppercase">{row.original.asset}</span>
+        );
       },
     },
     {
       accessorKey: "tokenAddress",
       header: "TOKEN ADDRESS",
       cell: ({ row }) => {
-        const type = row.original.type;
+        const { type, token, tokenIn, tokenOut } = row.original;
+
+        let address = null;
+
         if (type === "TokenAdded") {
-          const token = row.original.token;
-          const short = `${token.slice(0, 6)}...${token.slice(-4)}`;
-          const bscUrl = `https://bscscan.com/token/${token}`;
-          const handleCopy = () => navigator.clipboard.writeText(token);
-          return (
-            <div className="flex items-center gap-2">
-              <span
-                className="text-sm font-mono text-blue-400 hover:underline cursor-pointer"
-                onClick={() => window.open(bscUrl)}
-              >
-                {short}
-              </span>
-              <Copy
-                size={16}
-                className="hover:text-blue-400 cursor-pointer"
-                onClick={handleCopy}
-              />
-            </div>
-          );
+          address = token;
+        } else if (type === "Sell") {
+          address = tokenIn;
+        } else if (type === "Buy") {
+          address = tokenOut;
         }
-        return "N/A";
+
+        if (!address) return "N/A";
+
+        const short = `${address.slice(0, 6)}...${address.slice(-4)}`;
+        const bscUrl = `https://bscscan.com/token/${address}`;
+        const handleCopy = () => navigator.clipboard.writeText(address);
+
+        return (
+          <div className="flex items-center gap-2">
+            <span
+              className="text-sm font-mono text-blue-400 hover:underline cursor-pointer"
+              onClick={() => window.open(bscUrl)}
+            >
+              {short}
+            </span>
+            <Copy
+              size={16}
+              className="hover:text-blue-400 cursor-pointer"
+              onClick={handleCopy}
+            />
+          </div>
+        );
       },
     },
-
     {
       accessorKey: "tokenIn",
       header: "TOKEN IN",
@@ -170,7 +277,7 @@ export default function ContractStatusPage() {
           <span>Please wait while we fetch the signals...</span>
         </div>
       ) : (
-        <DataTable columns={columns} data={contractStatusData} />
+        <DataTable columns={columns} data={processedContractData} />
       )}
     </div>
   );
