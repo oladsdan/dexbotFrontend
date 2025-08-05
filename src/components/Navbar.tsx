@@ -11,13 +11,6 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Logo + Title */}
           <div className="flex items-center space-x-4">
-            <Link to="https://securearbitrage.com">
-              <img
-                src="/logo.jpg"
-                alt="Logo"
-                className="h-12 w-12 object-cover rounded-lg"
-              />
-            </Link>
             <h1 className="font-bold text-white text-lg">THEDEXBOT.COM</h1>
           </div>
 
