@@ -5,10 +5,30 @@ import { Copy, Loader } from "lucide-react";
 import { DataTable } from "@/components/ui/data-table";
 import monitoredTokens from "@/monitodTokens.json";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+
+const apiUrl = "https://backend.thedexbot.com/apis/contract-status";
 
 export default function ContractStatusPage() {
-  const apiUrl = "https://backend.thedexbot.com/apis/contract-status";
   const [processedContractData, setProcessedContractData] = useState([]);
+  const [timeZoneLabel, setTimeZoneLabel] = useState("TIME");
+
+  useEffect(() => {
+    const fetchTimeZone = async () => {
+      try {
+        const response = await fetch("https://ipwho.is/");
+        const data = await response.json();
+        if (data.success) {
+          const country = data.country;
+          setTimeZoneLabel(`${country} Time`);
+        }
+      } catch (err) {
+        console.error("Failed to fetch IP time zone info:", err);
+      }
+    };
+
+    fetchTimeZone();
+  }, []);
 
   const fetchContractStatus = async () => {
     const { data } = await axios.get(apiUrl);
@@ -140,9 +160,7 @@ export default function ContractStatusPage() {
       accessorKey: "asset",
       header: "ASSET (SYMBOL)",
       cell: ({ row }) => {
-        return (
-          <span className="uppercase">{row.original.asset}</span>
-        );
+        return <span className="uppercase">{row.original.asset}</span>;
       },
     },
     {
@@ -243,9 +261,13 @@ export default function ContractStatusPage() {
     },
     {
       accessorKey: "formattedTimestamp",
-      header: "TIME",
+      header: timeZoneLabel,
       cell: ({ row }) => {
-        return <span className="font-mono text-sm">{row.original.formattedTimestamp}</span>;
+        return (
+          <span className="font-mono text-sm">
+            {row.original.formattedTimestamp}
+          </span>
+        );
       },
     },
   ];
@@ -253,6 +275,15 @@ export default function ContractStatusPage() {
   return (
     <div>
       <h1 className="text-3xl font-bold my-8  text-center">Contract Status</h1>
+      <p className="text-center mb-8 text-blue-400 underline">
+        {" "}
+        <Link
+          to="https://bscscan.com/address/0xa257b7cc03b962888c9812611fbcb843dd274477"
+          target="_blank"
+        >
+          Contract Address
+        </Link>
+      </p>
 
       {/* Data Table */}
       {isLoading ? (

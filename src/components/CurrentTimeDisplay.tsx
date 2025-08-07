@@ -64,31 +64,6 @@ export default function CurrentTimeDisplay({
     }
   };
 
-  // useEffect(() => {
-  //   setHasMounted(true);
-
-  //   let tz = timezone || "UTC";
-  //   let countryName = "Unknown";
-
-  //   const savedCountryData = loadSavedCountry();
-  //   if (savedCountryData && savedCountryData.id) {
-  //     countryName = savedCountryData.name;
-  //     if (!timezone) {
-  //       const country = ct.getCountry(savedCountryData.id);
-  //       if (country && country.timezones.length > 0) {
-  //         tz = country.timezones[0];
-  //       }
-  //     }
-  //   }
-
-  //   const timer = setInterval(() => {
-  //     const now = new Date();
-  //     const timeStr = formatDate(now, tz);
-  //     setCurrentTime(`${timeStr} (${countryName})`);
-  //   }, 1000);
-
-  //   return () => clearInterval(timer);
-  // }, [timezone]);
 
   useEffect(() => {
   setHasMounted(true);
