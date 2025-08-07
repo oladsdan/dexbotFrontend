@@ -211,20 +211,10 @@ export default function ContractStatusPage() {
     {
       accessorKey: "amountIn",
       header: "AMOUNT IN",
-      cell: ({ row }) => {
-        return row.original.amountIn
-          ? parseFloat(row.original.amountIn).toFixed(6)
-          : "N/A";
-      },
     },
     {
       accessorKey: "amountOut",
       header: "AMOUNT OUT",
-      cell: ({ row }) => {
-        return row.original.amountOut
-          ? parseFloat(row.original.amountOut).toFixed(6)
-          : "N/A";
-      },
     },
     {
       accessorKey: "txHash",
@@ -252,16 +242,10 @@ export default function ContractStatusPage() {
       },
     },
     {
-      accessorKey: "timestamp",
+      accessorKey: "formattedTimestamp",
       header: "TIME",
       cell: ({ row }) => {
-        const time = row.original.timestamp;
-        if (!time) return "N/A";
-
-        const formatted = DateTime.fromMillis(Number(time)).toFormat(
-          "dd.MM.yyyy HH:mm:ss"
-        );
-        return <span className="font-mono text-sm">{formatted}</span>;
+        return <span className="font-mono text-sm">{row.original.formattedTimestamp}</span>;
       },
     },
   ];
