@@ -238,6 +238,11 @@ export default function ContractStatusPage() {
     {
       accessorKey: "amountOut",
       header: "AMOUNT OUT",
+      cell: ({ row }) => {
+        const amountOut = row.original.amountIn;
+        if (!amountOut) return "N/A";
+        return <span className="text-sm font-mono cursor-default">{amountOut}USDT</span>;
+      }
     },
     {
       accessorKey: "txHash",
