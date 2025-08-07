@@ -87,8 +87,8 @@ export default function ContractStatusPage() {
             ...item,
             serialNo: index + 1,
             asset: `${assetName} (${symbol})`,
-            amountIn: amountIn ? parseFloat(amountIn).toFixed(6) : "N/A",
-            amountOut: amountOut ? parseFloat(amountOut).toFixed(6) : "N/A",
+            // amountIn: amountIn ? parseFloat(amountIn).toFixed(6) : "N/A",
+            // amountOut: amountOut ? parseFloat(amountOut).toFixed(6) : "N/A",
             formattedTimestamp: timestamp
               ? DateTime.fromMillis(Number(timestamp)).toFormat(
                   "dd.MM.yyyy HH:mm:ss"
@@ -204,25 +204,52 @@ export default function ContractStatusPage() {
     },
     {
       accessorKey: "tokenIn",
-      header: "TOKEN IN",
+      header: "ASSET IN",
       cell: ({ row }) => {
         const tokenOut = row.original.tokenOut;
+        const bscUrl = `https://bscscan.com/token/${tokenOut}`;
+        const handleCopy = () => navigator.clipboard.writeText(tokenOut);
+
         if (!tokenOut) return "N/A";
         const short = `${tokenOut.slice(0, 6)}...${tokenOut.slice(-4)}`;
         return (
-          <span className="text-sm font-mono cursor-default">{short}</span>
+          <div className="flex items-center gap-2">
+            <span 
+            onClick={() => window.open(bscUrl)}
+            className="text-sm font-mono cursor-pointer">{short}</span>
+            <Copy
+            size={16}
+            className="hover:text-blue-400 cursor-pointer"
+            onClick={handleCopy}
+             />
+
+          </div>
         );
       },
     },
     {
       accessorKey: "tokenOut",
-      header: "TOKEN OUT",
+      header: "ASSET OUT",
       cell: ({ row }) => {
         const tokenIn = row.original.tokenIn;
+        const bscUrl = `https://bscscan.com/token/${tokenIn}`;
+        const handleCopy = () => navigator.clipboard.writeText(tokenIn);
+
+
         if (!tokenIn) return "N/A";
         const short = `${tokenIn.slice(0, 6)}...${tokenIn.slice(-4)}`;
         return (
-          <span className="text-sm font-mono cursor-default">{short}</span>
+          <div className="flex items-center gap-2">
+            <span
+            onClick={() => window.open(bscUrl)}
+            className="text-sm font-mono cursor-pointer">{short}</span>
+             <Copy
+            size={16}
+            className="hover:text-blue-400 cursor-pointer"
+            onClick={handleCopy}
+             />
+
+          </div>
         );
       },
     },
@@ -231,8 +258,17 @@ export default function ContractStatusPage() {
       header: "AMOUNT IN",
       cell: ({ row }) => {
         const amountIn = row.original.amountOut;
+        const eventType = row.original.type;
+        const assetName = row.original.asset.split("(")[1].split(")")[0];
+        // const splitAssetName = assetName.split(" ")[0];
+
+
+
         if (!amountIn) return "N/A";
-        return <span className="text-sm font-mono cursor-default">{amountIn}</span>;
+
+        if (eventType.toUpperCase() === "SELL") return `${amountIn} USDT`;
+
+        return <span className="text-sm font-mono cursor-default">{amountIn} {assetName}</span>;
       }
     },
     {
@@ -240,10 +276,39 @@ export default function ContractStatusPage() {
       header: "AMOUNT OUT",
       cell: ({ row }) => {
         const amountOut = row.original.amountIn;
+         const eventType = row.original.type;
+        const assetName = row.original.asset.split("(")[1].split(")")[0];
+
+        if (eventType.toUpperCase() === "BUY") return `${amountOut} USDT`;
         if (!amountOut) return "N/A";
-        return <span className="text-sm font-mono cursor-default">{amountOut}USDT</span>;
+        return <span className="text-sm font-mono cursor-default">{amountOut} {assetName}</span>;
       }
     },
+
+    {
+
+      accessorKey: "Price of Asset Bought",
+      header: "PRICE BOUGHT",
+      cell: ({ row }) => {
+        
+      }
+
+    },
+
+    {
+      accessorKey: "Current Price of Asset",
+      header: "CURRENT PRICE",
+
+
+    },
+    {
+      accessorKey: "Now Difference %",
+      header: "NOW DIFF(%)",
+
+
+    },
+
+
     {
       accessorKey: "txHash",
       header: "TRANSACTION",
