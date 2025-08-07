@@ -165,7 +165,7 @@ export default function ContractStatusPage() {
     },
     {
       accessorKey: "tokenAddress",
-      header: "TOKEN ADDRESS",
+      header: "ASSET ADDRESS",
       cell: ({ row }) => {
         const { type, token, tokenIn, tokenOut } = row.original;
 
@@ -206,18 +206,6 @@ export default function ContractStatusPage() {
       accessorKey: "tokenIn",
       header: "TOKEN IN",
       cell: ({ row }) => {
-        const tokenIn = row.original.tokenIn;
-        if (!tokenIn) return "N/A";
-        const short = `${tokenIn.slice(0, 6)}...${tokenIn.slice(-4)}`;
-        return (
-          <span className="text-sm font-mono cursor-default">{short}</span>
-        );
-      },
-    },
-    {
-      accessorKey: "tokenOut",
-      header: "TOKEN OUT",
-      cell: ({ row }) => {
         const tokenOut = row.original.tokenOut;
         if (!tokenOut) return "N/A";
         const short = `${tokenOut.slice(0, 6)}...${tokenOut.slice(-4)}`;
@@ -227,8 +215,25 @@ export default function ContractStatusPage() {
       },
     },
     {
+      accessorKey: "tokenOut",
+      header: "TOKEN OUT",
+      cell: ({ row }) => {
+        const tokenIn = row.original.tokenIn;
+        if (!tokenIn) return "N/A";
+        const short = `${tokenIn.slice(0, 6)}...${tokenIn.slice(-4)}`;
+        return (
+          <span className="text-sm font-mono cursor-default">{short}</span>
+        );
+      },
+    },
+    {
       accessorKey: "amountIn",
       header: "AMOUNT IN",
+      cell: ({ row }) => {
+        const amountIn = row.original.amountOut;
+        if (!amountIn) return "N/A";
+        return <span className="text-sm font-mono cursor-default">{amountIn}</span>;
+      }
     },
     {
       accessorKey: "amountOut",
