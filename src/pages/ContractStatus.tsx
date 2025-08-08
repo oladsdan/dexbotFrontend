@@ -185,7 +185,7 @@ export default function ContractStatusPage() {
   }, [contractStatusData, processContractData]);
 
 
-  console.log("this is processed contract data", processedContractData);
+  // console.log("this is processed contract data", processedContractData);
 
   const columns = [
     {
@@ -351,21 +351,14 @@ export default function ContractStatusPage() {
     {
       accessorKey: "Current Price of Asset",
       header: "CURRENT PRICE",
-      Cell: ({ row }) => {
-         const address = row.original.token;
-
+      cell: ({ row }) => {
         const eventType = row.original.type;
+        const currentPrice = row.original.currentPrice;
 
-        const currentPrice = processedContractData.find((data) => data.tokenOut.toLowerCase === address.toLowerCase())?.currentPrice;
-
-
-
-        // const currentPrice = row.original.currentPrice;
-        // console.log("thisis current price", currentPrice);
-
-        // if (!currentPrice) return "N/A";
-        // // if (eventType.toUpperCase() === "BUY") return `${currentPrice} USDT`;
-        return <span className="text-sm font-mono cursor-default">{currentPrice} USDT</span>;
+        if (eventType.toUpperCase() === "BUY") return `${Number(currentPrice).toFixed(8)} USDT`;
+        if (!currentPrice) return "N/A";
+        else return "N/A";
+        // return <span className="text-sm font-mono cursor-default">{currentPrice} USDT</span>;
       }
 
 
@@ -373,6 +366,23 @@ export default function ContractStatusPage() {
     {
       accessorKey: "Now Difference %",
       header: "NOW DIFF(%)",
+       cell: ({ row }) => {
+        const eventType = row.original.type;
+        const nowDiff = row.original.nowDiffPercent;
+
+        let colorClass;
+
+        if (nowDiff?.includes("-")) colorClass = "text-red-400";
+        else colorClass = "text-green-400";
+
+
+        if (eventType.toUpperCase() === "BUY") {
+          return <span className={`font-medium uppercase ${colorClass}`}>{nowDiff}</span>;
+        };
+        if (!nowDiff) return "N/A";
+        else return "N/A";
+        // return <span className="text-sm font-mono cursor-default">{currentPrice} USDT</span>;
+      }
 
 
     },
