@@ -6,12 +6,20 @@ import { DataTable } from "@/components/ui/data-table";
 import monitoredTokens from "@/monitodTokens.json";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { Cell } from "recharts";
 
 const apiUrl = "https://backend.thedexbot.com/apis/contract-status";
+
+const signals = "https://backend.thedexbot.com/apis/signals";
+
 
 export default function ContractStatusPage() {
   const [processedContractData, setProcessedContractData] = useState([]);
   const [timeZoneLabel, setTimeZoneLabel] = useState("TIME");
+
+
+
+
 
   useEffect(() => {
     const fetchTimeZone = async () => {
@@ -35,6 +43,11 @@ export default function ContractStatusPage() {
     return data;
   };
 
+  const fetchSignals = async () => {
+    const { data } = await axios.get(signals);
+    return data;
+  };
+
   const {
     data: contractStatusData = [],
     isLoading,
@@ -45,6 +58,12 @@ export default function ContractStatusPage() {
     queryFn: fetchContractStatus,
     refetchInterval: 2000, // Refetch every 1 seconds
   });
+
+  const { data: signalsData = [] } = useQuery({
+  queryKey: ["signals"],
+  queryFn: fetchSignals,
+  refetchInterval: 30000, // refresh every 30 sec
+});
 
   const tokenMap = useMemo(() => {
     const map = new Map();
@@ -117,6 +136,28 @@ export default function ContractStatusPage() {
             : "UNKNOWN");
         const assetName = matched?.name || "Unknown";
 
+         // Match with signalsData
+        // let matchedSignal = null;
+        // if (signalsData && signalsData.length > 0) {
+        //   matchedSignal = signalsData.find(
+        //     s =>
+        //       s.pairName &&
+        //       s.pairName.toLowerCase().includes(symbol?.toLowerCase())
+        //   );
+        // }
+
+         const matchedSignal = signalsData?.find(
+        (s) => s.pairAddress?.toLowerCase() === address
+         );
+
+
+        const currentPrice = matchedSignal?.currentPrice ?? "N/A";
+        const nowDiffPercent = matchedSignal?.now_diff_percent ?? "N/A";
+
+       
+
+
+
         return {
           ...item,
           serialNo: index + 1,
@@ -128,6 +169,8 @@ export default function ContractStatusPage() {
                 "dd.MM.yyyy HH:mm:ss"
               )
             : "N/A",
+          currentPrice,
+          nowDiffPercent,
         };
       });
 
@@ -135,11 +178,14 @@ export default function ContractStatusPage() {
     } catch (err) {
       console.error("Error processing contract data:", err);
     }
-  }, [contractStatusData, tokenMap]);
+  }, [contractStatusData, tokenMap, signalsData ]);
 
   useEffect(() => {
     processContractData();
   }, [contractStatusData, processContractData]);
+
+
+  console.log("this is processed contract data", processedContractData);
 
   const columns = [
     {
@@ -290,6 +336,13 @@ export default function ContractStatusPage() {
       accessorKey: "Price of Asset Bought",
       header: "PRICE BOUGHT",
       cell: ({ row }) => {
+        const eventType = row.original.type;
+        const amountBought = row.original.amountBought;
+
+        if (!amountBought) return "N/A";
+        if (eventType.toUpperCase() === "BUY") return `${amountBought} USDT`;
+        // return <span className="text-sm font-mono cursor-default">{amountBought} USDT</span>;
+
         
       }
 
@@ -298,6 +351,22 @@ export default function ContractStatusPage() {
     {
       accessorKey: "Current Price of Asset",
       header: "CURRENT PRICE",
+      Cell: ({ row }) => {
+         const address = row.original.token;
+
+        const eventType = row.original.type;
+
+        const currentPrice = processedContractData.find((data) => data.tokenOut.toLowerCase === address.toLowerCase())?.currentPrice;
+
+
+
+        // const currentPrice = row.original.currentPrice;
+        // console.log("thisis current price", currentPrice);
+
+        // if (!currentPrice) return "N/A";
+        // // if (eventType.toUpperCase() === "BUY") return `${currentPrice} USDT`;
+        return <span className="text-sm font-mono cursor-default">{currentPrice} USDT</span>;
+      }
 
 
     },
